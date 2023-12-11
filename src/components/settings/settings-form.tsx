@@ -337,8 +337,8 @@ const SettingsForm = () => {
                     >
                       <div className="flex gap-4 items-center">
                         <Avatar>
-                          <AvatarImage src="/avatars/7.png" />
-                          <AvatarFallback>PJ</AvatarFallback>
+                          {/* <AvatarImage src="/avatars/7.png" /> */}
+                          <AvatarFallback>K</AvatarFallback>
                         </Avatar>
                         <div
                           className="text-sm 

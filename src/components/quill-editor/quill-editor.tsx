@@ -284,6 +284,52 @@ const QuillEditor: React.FC<QuillEditorProps> = ({
     setDeletingBanner(false);
   };
 
+  //on change title
+  const workspaceNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (dirType === 'workspace') {
+      if (!workspaceId || !e.target.value) return;
+      dispatch({
+        type: 'UPDATE_WORKSPACE',
+        payload: { workspace: { title: e.target.value }, workspaceId },
+      });
+      if (saveTimerRef.current) clearTimeout(saveTimerRef.current);
+      saveTimerRef.current = setTimeout(async () => {
+        await updateWorkspace({ title: e.target.value }, workspaceId);
+      }, 500);
+    }
+    if (dirType === 'folder') {
+      if (!workspaceId) return;
+      dispatch({
+        type: 'UPDATE_FOLDER',
+        payload: {
+          folder: { title: e.target.value },
+          workspaceId,
+          folderId: fileId,
+        },
+      });
+      if (saveTimerRef.current) clearTimeout(saveTimerRef.current);
+      saveTimerRef.current = setTimeout(async () => {
+        await updateFolder({ title: e.target.value }, fileId);
+      }, 500);
+    }
+    if (dirType === 'file') {
+      if (!workspaceId || !folderId) return;
+      dispatch({
+        type: 'UPDATE_FILE',
+        payload: { 
+          file: { title: e.target.value }, 
+          workspaceId, 
+          folderId, 
+          fileId 
+        },
+      });
+      if (saveTimerRef.current) clearTimeout(saveTimerRef.current);
+      saveTimerRef.current = setTimeout(async () => {
+        await updateFile({ title: e.target.value }, fileId);
+      }, 500);
+    }
+  };
+
   useEffect(() => {
     if (!fileId) return;
     let selectedDir;
@@ -662,13 +708,15 @@ const QuillEditor: React.FC<QuillEditorProps> = ({
       "
       >
         <div
-          className="w-full 
-        self-center 
-        max-w-[800px] 
-        flex 
-        flex-col
-         px-7 
-         lg:my-8"
+          className="
+            w-full 
+            self-center 
+            max-w-[1100px] 
+            flex 
+            flex-col
+            px-7 
+            lg:my-8
+          "
         >
           <div className="text-[80px]">
             <EmojiPicker getValue={iconOnChange}>
@@ -724,23 +772,18 @@ const QuillEditor: React.FC<QuillEditorProps> = ({
               </Button>
             )}
           </div>
-          <span
-            className="
-            text-muted-foreground
-            text-3xl
-            font-bold
-            h-9
-          "
-          >
-            {details.title}
-          </span>
+          <input 
+            className="font-bold text-[40px] bg-transparent"
+            value={details ? details.title : ''}
+            onChange={workspaceNameChange}
+          />
           <span className="text-muted-foreground text-sm">
             {dirType.toUpperCase()}
           </span>
         </div>
         <div
           id="container"
-          className="max-w-[800px]"
+          className="max-w-[1100px]"
           ref={wrapperRef}
         ></div>
       </div>
