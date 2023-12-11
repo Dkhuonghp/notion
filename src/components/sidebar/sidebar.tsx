@@ -25,10 +25,9 @@ import { workspace } from '@/lib/supabase/supabase.types';
 interface SidebarProps {
   params: { workspaceId: string };
   className?: string;
-  defaultValue: workspace | undefined;
 }
 
-const Sidebar: React.FC<SidebarProps> = async ({ params, className, defaultValue }) => {
+const Sidebar: React.FC<SidebarProps> = async ({ params, className }) => {
   const supabase = createServerComponentClient({ cookies });
 
   //user
