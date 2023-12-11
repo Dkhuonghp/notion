@@ -14,11 +14,13 @@ export const config = {
 
 const ioHandler = (req: NextApiRequest, res: NextApiResponseServerIo) => {
   if (!res.socket.server.io) {
-    const path = '/api/socket/io';
+    const path = '/socket.io';
     const httpServer: NetServer = res.socket.server as any;
     const io = new ServerIO(httpServer, {
       path,
       addTrailingSlash: false,
+      transports: ['websocket'],
+      // secure: true,
       cors: {
         origin: 'https://notion-ndkhuong.vercel.app',
         methods: ['GET', 'POST'],
