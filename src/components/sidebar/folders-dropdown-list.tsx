@@ -104,21 +104,20 @@ const FoldersDropdownList: React.FC<FoldersDropdownListProps> = ({
         group/title 
         justify-between 
         items-center 
-        pr-4 
-        text-Neutrals/neutrals-8
+        text-Neutrals-2/neutrals-3
   "
       >
         <span
-          className="text-Neutrals-8 
-        font-bold 
-        text-xs"
+          className="
+          text-Neutrals-8 
+          text-muted-foreground"
         >
-          FOLDERS
+          Folders
         </span>
         <TooltipComponent message="Create Folder">
           <PlusIcon
             onClick={addFolderHandler}
-            size={16}
+            size={18}
             className="group-hover/title:inline-block
             hidden 
             cursor-pointer

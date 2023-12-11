@@ -18,7 +18,7 @@ const NativeNavigation: React.FC<NativeNavigationProps> = ({
 }) => {
   return (
     <nav className={twMerge('my-2', className)}>
-      <ul className="flex flex-col gap-2">
+      <ul className="flex flex-col gap-2 pb-2 pt-2">
         <li>
           <Link
             className="group/native
@@ -26,6 +26,7 @@ const NativeNavigation: React.FC<NativeNavigationProps> = ({
             text-Neutrals/neutrals-7
             transition-all
             gap-2
+            pb-2
           "
             href={`/dashboard/${myWorkspaceId}`}
           >
@@ -41,6 +42,7 @@ const NativeNavigation: React.FC<NativeNavigationProps> = ({
             text-Neutrals/neutrals-7
             transition-all
             gap-2
+            pb-2
             cursor-pointer
           "
           >
@@ -56,6 +58,7 @@ const NativeNavigation: React.FC<NativeNavigationProps> = ({
             text-Neutrals/neutrals-7
             transition-all
             gap-2
+            pb-2
           "
           >
             <CypressTrashIcon />

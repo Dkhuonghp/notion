@@ -44,8 +44,9 @@ const UserCard: React.FC<UserCardProps> = async ({ subscription }) => {
       items-center 
       px-4 
       py-2 
+      mb-5
       dark:bg-Neutrals/neutrals-12
-      rounded-3xl
+      rounded-md
   "
     >
       <aside className="flex justify-center items-center gap-2">
@@ -56,9 +57,9 @@ const UserCard: React.FC<UserCardProps> = async ({ subscription }) => {
           </AvatarFallback>
         </Avatar>
         <div className="flex flex-col">
-          <span className="text-muted-foreground">
+          {/* <span className="text-muted-foreground">
             {subscription?.status === 'active' ? 'Pro Plan' : 'Free Plan'}
-          </span>
+          </span> */}
           <small
             className="w-[100px] 
           overflow-hidden 

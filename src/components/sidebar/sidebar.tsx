@@ -1,5 +1,5 @@
 import { createServerComponentClient } from '@supabase/auth-helpers-nextjs';
-import React from 'react';
+import React, { useState } from 'react';
 
 import { cookies } from 'next/headers';
 import {
@@ -17,14 +17,20 @@ import NativeNavigation from './native-navigation';
 import { ScrollArea } from '../ui/scroll-area';
 import FoldersDropdownList from './folders-dropdown-list';
 import UserCard from './user-card';
+import CustomDialogTrigger from '../global/custom-dialog-trigger';
+import WorkspaceCreator from '../global/workspace-creator';
+import SelectedWorkspace from './selected-workspace';
+import { workspace } from '@/lib/supabase/supabase.types';
 
 interface SidebarProps {
   params: { workspaceId: string };
   className?: string;
+  defaultValue: workspace | undefined;
 }
 
-const Sidebar: React.FC<SidebarProps> = async ({ params, className }) => {
+const Sidebar: React.FC<SidebarProps> = async ({ params, className, defaultValue }) => {
   const supabase = createServerComponentClient({ cookies });
+
   //user
   const {
     data: { user },
@@ -48,7 +54,7 @@ const Sidebar: React.FC<SidebarProps> = async ({ params, className }) => {
       getPrivateWorkspaces(user.id),
       getCollaboratingWorkspaces(user.id),
       getSharedWorkspaces(user.id),
-    ]);    
+    ]);
 
   //get all the different workspaces private collaborating shared
   return (
@@ -59,7 +65,8 @@ const Sidebar: React.FC<SidebarProps> = async ({ params, className }) => {
       )}
     >
       <div>
-        <WorkspaceDropdown
+        <UserCard subscription={subscriptionData} />
+        {/* <WorkspaceDropdown
           privateWorkspaces={privateWorkspaces}
           sharedWorkspaces={sharedWorkspaces}
           collaboratingWorkspaces={collaboratingWorkspaces}
@@ -68,12 +75,84 @@ const Sidebar: React.FC<SidebarProps> = async ({ params, className }) => {
             ...collaboratingWorkspaces,
             ...sharedWorkspaces,
           ].find((workspace) => workspace.id === params.workspaceId)}
-        />
+        /> */}
         {/* <PlanUsage
           foldersLength={workspaceFolderData?.length || 0}
           subscription={subscriptionData}
         /> */}
-        <NativeNavigation myWorkspaceId={params.workspaceId} />
+        <div className="rounded-md flex flex-col">
+          <CustomDialogTrigger
+            header="Create A Workspace"
+            content={<WorkspaceCreator />}
+            description="Workspaces give you the power to collaborate with others. You can change your workspace privacy settings after creating the workspace too."
+          >
+            <div
+              className="flex 
+              rounded-md
+              transition-all 
+              hover:bg-muted 
+              items-center 
+              gap-5 
+              pl-4
+              p-2 
+              w-full"
+            >
+              <article
+                className="text-slate-500 
+                rounded-full
+                bg-slate-800 
+                w-4 
+                h-4 
+                flex 
+                items-center 
+                justify-center"
+              >
+                +
+              </article>
+              New Page
+            </div>
+          </CustomDialogTrigger>
+          <NativeNavigation myWorkspaceId={params.workspaceId} />
+          <div>
+            {!!privateWorkspaces.length && (
+              <>
+                <p className="text-muted-foreground">Private</p>
+                <hr></hr>
+                {privateWorkspaces.map((option) => (
+                  <SelectedWorkspace
+                    key={option.id}
+                    workspace={option}
+                  />
+                ))}
+              </>
+            )}
+            {!!sharedWorkspaces.length && (
+              <>
+                <p className="text-muted-foreground">Shared</p>
+                <hr />
+                {sharedWorkspaces.map((option) => (
+                  <SelectedWorkspace
+                    key={option.id}
+                    workspace={option}
+                  />
+                ))}
+              </>
+            )}
+            {!!collaboratingWorkspaces.length && (
+              <>
+                <p className="text-muted-foreground">Collaborating</p>
+                <hr />
+                {collaboratingWorkspaces.map((option) => (
+                  <SelectedWorkspace
+                    key={option.id}
+                    workspace={option}
+                  />
+                ))}
+              </>
+            )}
+          </div>
+        </div>
+        
         <ScrollArea
           className="overflow-scroll relative
           h-[450px]
@@ -96,7 +175,6 @@ const Sidebar: React.FC<SidebarProps> = async ({ params, className }) => {
           />
         </ScrollArea>
       </div>
-      <UserCard subscription={subscriptionData} />
     </aside>
   );
 };
