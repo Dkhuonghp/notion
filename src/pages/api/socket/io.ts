@@ -2,6 +2,9 @@ import { NextApiResponseServerIo } from '@/lib/types';
 import { Server as NetServer } from 'http';
 import { Server as ServerIO } from 'socket.io';
 import { NextApiRequest } from 'next';
+import cors from 'cors';
+
+cors()
 
 export const config = {
   api: {
@@ -16,6 +19,10 @@ const ioHandler = (req: NextApiRequest, res: NextApiResponseServerIo) => {
     const io = new ServerIO(httpServer, {
       path,
       addTrailingSlash: false,
+      cors: {
+        origin: 'https://notion-ndkhuong.vercel.app',
+        methods: ['GET', 'POST'],
+      },
     });
     io.on('connection', (s) => {
       s.on('create-room', (fileId) => {
