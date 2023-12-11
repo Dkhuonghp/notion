@@ -22,12 +22,16 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
   const [isConnected, setIsConnected] = useState(false);
 
   useEffect(() => {
+    const protocol = process.env.NEXT_PUBLIC_SITE_URL?.startsWith('https') ? 'wss' : 'ws';
+    const socketURL = `${protocol}://${process.env.NEXT_PUBLIC_SITE_URL || ''}/socket.io`;
+
     const socketInstance = new (ClientIO as any)(
-      process.env.NEXT_PUBLIC_SITE_URL!,
+      socketURL,
       {
         path: '/socket.io',
         addTrailingSlash: false,
-        transports: ['websocket'],
+        transports: ["websocket", "polling"],
+        secure: true,
       }
     );
     socketInstance.on('connect', () => {

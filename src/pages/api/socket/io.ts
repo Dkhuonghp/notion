@@ -19,11 +19,11 @@ const ioHandler = (req: NextApiRequest, res: NextApiResponseServerIo) => {
     const io = new ServerIO(httpServer, {
       path,
       addTrailingSlash: false,
-      transports: ['websocket'],
-      // secure: true,
+      transports: ["websocket", "polling"],
       cors: {
         origin: 'https://notion-ndkhuong.vercel.app',
         methods: ['GET', 'POST'],
+        credentials: true
       },
     });
     io.on('connection', (s) => {
