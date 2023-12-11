@@ -71,6 +71,7 @@ const QuillEditor: React.FC<QuillEditorProps> = ({
   const supabase = createClientComponentClient();
   const { state, workspaceId, folderId, dispatch } = useAppState();
   const saveTimerRef = useRef<ReturnType<typeof setTimeout>>();
+  const titleTimerRef = useRef<ReturnType<typeof setTimeout>>();
   const { user } = useSupabaseUser();
   const router = useRouter();
   const { socket, isConnected } = useSocket();
@@ -292,8 +293,8 @@ const QuillEditor: React.FC<QuillEditorProps> = ({
         type: 'UPDATE_WORKSPACE',
         payload: { workspace: { title: e.target.value }, workspaceId },
       });
-      if (saveTimerRef.current) clearTimeout(saveTimerRef.current);
-      saveTimerRef.current = setTimeout(async () => {
+      if (titleTimerRef.current) clearTimeout(titleTimerRef.current);
+      titleTimerRef.current = setTimeout(async () => {
         await updateWorkspace({ title: e.target.value }, workspaceId);
       }, 500);
     }
@@ -307,8 +308,8 @@ const QuillEditor: React.FC<QuillEditorProps> = ({
           folderId: fileId,
         },
       });
-      if (saveTimerRef.current) clearTimeout(saveTimerRef.current);
-      saveTimerRef.current = setTimeout(async () => {
+      if (titleTimerRef.current) clearTimeout(titleTimerRef.current);
+      titleTimerRef.current = setTimeout(async () => {
         await updateFolder({ title: e.target.value }, fileId);
       }, 500);
     }
@@ -323,8 +324,8 @@ const QuillEditor: React.FC<QuillEditorProps> = ({
           fileId 
         },
       });
-      if (saveTimerRef.current) clearTimeout(saveTimerRef.current);
-      saveTimerRef.current = setTimeout(async () => {
+      if (titleTimerRef.current) clearTimeout(titleTimerRef.current);
+      titleTimerRef.current = setTimeout(async () => {
         await updateFile({ title: e.target.value }, fileId);
       }, 500);
     }
