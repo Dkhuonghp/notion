@@ -88,13 +88,14 @@ const Sidebar: React.FC<SidebarProps> = async ({ params, className }) => {
               rounded-md
               transition-all 
               hover:bg-muted 
+              text-Neutrals/neutrals-7
               items-center 
               gap-5 
               p-2 
               w-full"
             >
               <PlusIcon
-                size={18}
+                size={24}
                 className="
                 cursor-pointer
                 hover:dark:text-white

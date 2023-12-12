@@ -18,16 +18,10 @@ const NativeNavigation: React.FC<NativeNavigationProps> = ({
 }) => {
   return (
     <nav className={twMerge('my-2', className)}>
-      <ul className="flex flex-col gap-2 pb-2 pt-2">
+      <ul className="flex flex-col gap-2">
         <li>
           <Link
-            className="group/native
-            flex
-            text-Neutrals/neutrals-7
-            transition-all
-            gap-2
-            pb-2
-          "
+            className="flex items-center group/native text-Neutrals/neutrals-7 rounded-md transition-all hover:bg-muted items-center gap-5 p-2 w-full"
             href={`/dashboard/${myWorkspaceId}`}
           >
             <CypressHomeIcon />
@@ -37,14 +31,7 @@ const NativeNavigation: React.FC<NativeNavigationProps> = ({
 
         <Settings>
           <li
-            className="group/native
-            flex
-            text-Neutrals/neutrals-7
-            transition-all
-            gap-2
-            pb-2
-            cursor-pointer
-          "
+            className="flex items-center group/native text-Neutrals/neutrals-7 rounded-md transition-all hover:bg-muted items-center gap-5 p-2 w-full"
           >
             <CypressSettingsIcon />
             <span>Settings</span>
@@ -53,13 +40,7 @@ const NativeNavigation: React.FC<NativeNavigationProps> = ({
 
         <Trash>
           <li
-            className="group/native
-            flex
-            text-Neutrals/neutrals-7
-            transition-all
-            gap-2
-            pb-2
-          "
+            className="flex items-center group/native text-Neutrals/neutrals-7 rounded-md transition-all hover:bg-muted items-center gap-5 p-2 w-full"
           >
             <CypressTrashIcon />
             <span>Trash</span>

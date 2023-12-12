@@ -18,37 +18,6 @@ const WorkspaceSelect: React.FC<WorkspaceProps> = ({
     defaultValue,
 }) => {
     const { dispatch, state } = useAppState();
-    const getInitialShowValue = () => {
-        const keysToCheck = ['showPrivate', 'showShared', 'showCollaborating'];
-    
-        for (const key of keysToCheck) {
-            const storedValue = localStorage.getItem(key);
-            if (storedValue !== null) {
-                return JSON.parse(storedValue);
-            }
-        }
-        return true;
-    };
-    const [showCollaborating, setShowCollaborating] = useState(getInitialShowValue)
-    const [showPrivate, setShowPrivate] = useState(getInitialShowValue)
-    const [showShared, setShowShared] = useState(getInitialShowValue)
-
-    useEffect(() => {
-        localStorage.setItem('showPrivate', JSON.stringify(showPrivate));
-        localStorage.setItem('showShared', JSON.stringify(showShared))
-        localStorage.setItem('showCollaborating', JSON.stringify(showCollaborating))
-    }, [showPrivate, showShared, showCollaborating]);
-
-    const handleShowPrivate = () => {
-        setShowPrivate(!showPrivate)
-    }
-    const handleShowShared = () => {
-        setShowShared(!showShared)
-    }
-
-    const handleShowCollaborating = () => {
-        setShowCollaborating(!showCollaborating)
-    }
 
     useEffect(() => {
         if (!state.workspaces.length) {
@@ -69,10 +38,10 @@ const WorkspaceSelect: React.FC<WorkspaceProps> = ({
         <div>
             {!!privateWorkspaces.length && (
                 <>
-                    <span className="text-muted-foreground cursor-pointer rounded-md hover:bg-muted transition-all pl-1 pr-1 inline" onClick={handleShowPrivate}>Private</span>
-                    <hr className='opacity-0 pb-2'/>
+                    <p className="text-muted-foreground cursor-pointer rounded-md hover:bg-muted transition-all pl-1 pr-1 inline">Private</p>
+                    <hr/>
                     <>
-                        {showPrivate && privateWorkspaces.map((option) => (
+                        {privateWorkspaces.map((option) => (
                             <SelectedWorkspace
                                 key={option.id}
                                 workspace={option}
@@ -83,9 +52,9 @@ const WorkspaceSelect: React.FC<WorkspaceProps> = ({
             )}
             {!!sharedWorkspaces.length && (
                 <>
-                    <span className="text-muted-foreground cursor-pointer rounded-md hover:bg-muted transition-all pl-1 pr-1 inline" onClick={handleShowShared}>Shared</span>
-                    <hr className='opacity-0 pb-2'/>
-                    {showShared && sharedWorkspaces.map((option) => (
+                    <p className="text-muted-foreground cursor-pointer rounded-md hover:bg-muted transition-all pl-1 pr-1 inline">Shared</p>
+                    <hr/>
+                    {sharedWorkspaces.map((option) => (
                         <SelectedWorkspace
                             key={option.id}
                             workspace={option}
@@ -95,9 +64,9 @@ const WorkspaceSelect: React.FC<WorkspaceProps> = ({
             )}
             {!!collaboratingWorkspaces.length && (
                 <>
-                    <span className="text-muted-foreground cursor-pointer rounded-md hover:bg-muted transition-all pl-1 pr-1 inline" onClick={handleShowCollaborating}>Collaborating</span>
-                    <hr className='opacity-0 pb-2'/>
-                    {showCollaborating && collaboratingWorkspaces.map((option) => (
+                    <span className="text-muted-foreground cursor-pointer rounded-md hover:bg-muted transition-all pl-1 pr-1 inline">Collaborating</span>
+                    <hr/>
+                    {collaboratingWorkspaces.map((option) => (
                         <SelectedWorkspace
                             key={option.id}
                             workspace={option}
