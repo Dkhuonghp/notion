@@ -21,6 +21,8 @@ import CustomDialogTrigger from '../global/custom-dialog-trigger';
 import WorkspaceCreator from '../global/workspace-creator';
 import SelectedWorkspace from './selected-workspace';
 import { workspace } from '@/lib/supabase/supabase.types';
+import { PlusIcon } from 'lucide-react';
+import WorkspaceSelect from './workspaceSelect';
 
 interface SidebarProps {
   params: { workspaceId: string };
@@ -75,10 +77,6 @@ const Sidebar: React.FC<SidebarProps> = async ({ params, className }) => {
             ...sharedWorkspaces,
           ].find((workspace) => workspace.id === params.workspaceId)}
         /> */}
-        {/* <PlanUsage
-          foldersLength={workspaceFolderData?.length || 0}
-          subscription={subscriptionData}
-        /> */}
         <div className="rounded-md flex flex-col">
           <CustomDialogTrigger
             header="Create A Workspace"
@@ -92,64 +90,30 @@ const Sidebar: React.FC<SidebarProps> = async ({ params, className }) => {
               hover:bg-muted 
               items-center 
               gap-5 
-              pl-4
               p-2 
               w-full"
             >
-              <article
-                className="text-slate-500 
-                rounded-full
-                bg-slate-800 
-                w-4 
-                h-4 
-                flex 
-                items-center 
-                justify-center"
-              >
-                +
-              </article>
+              <PlusIcon
+                size={18}
+                className="
+                cursor-pointer
+                hover:dark:text-white
+              "
+              />
               New Page
             </div>
           </CustomDialogTrigger>
           <NativeNavigation myWorkspaceId={params.workspaceId} />
-          <div>
-            {!!privateWorkspaces.length && (
-              <>
-                <p className="text-muted-foreground">Private</p>
-                <hr></hr>
-                {privateWorkspaces.map((option) => (
-                  <SelectedWorkspace
-                    key={option.id}
-                    workspace={option}
-                  />
-                ))}
-              </>
-            )}
-            {!!sharedWorkspaces.length && (
-              <>
-                <p className="text-muted-foreground">Shared</p>
-                <hr />
-                {sharedWorkspaces.map((option) => (
-                  <SelectedWorkspace
-                    key={option.id}
-                    workspace={option}
-                  />
-                ))}
-              </>
-            )}
-            {!!collaboratingWorkspaces.length && (
-              <>
-                <p className="text-muted-foreground">Collaborating</p>
-                <hr />
-                {collaboratingWorkspaces.map((option) => (
-                  <SelectedWorkspace
-                    key={option.id}
-                    workspace={option}
-                  />
-                ))}
-              </>
-            )}
-          </div>
+          <WorkspaceSelect
+            privateWorkspaces={privateWorkspaces}
+            sharedWorkspaces={sharedWorkspaces}
+            collaboratingWorkspaces={collaboratingWorkspaces}
+            defaultValue={[
+              ...privateWorkspaces,
+              ...collaboratingWorkspaces,
+              ...sharedWorkspaces,
+            ].find((workspace) => workspace.id === params.workspaceId)}
+          />
         </div>
         
         <ScrollArea
@@ -159,14 +123,14 @@ const Sidebar: React.FC<SidebarProps> = async ({ params, className }) => {
         >
           <div
             className="pointer-events-none 
-          w-full 
-          absolute 
-          bottom-0 
-          h-20 
-          bg-gradient-to-t 
-          from-background 
-          to-transparent 
-          z-40"
+            w-full 
+            absolute 
+            bottom-0 
+            h-20 
+            bg-gradient-to-t 
+            from-background 
+            to-transparent 
+            z-40"
           />
           <FoldersDropdownList
             workspaceFolders={workspaceFolderData || []}

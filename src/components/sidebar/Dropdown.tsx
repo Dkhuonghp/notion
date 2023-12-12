@@ -312,7 +312,7 @@ const Dropdown: React.FC<DropdownProps> = ({
         p-2 
         dark:text-muted-foreground 
         text-sm"
-        disabled={listType === 'file'}
+        // disabled={listType === 'file'}
       >
         <div className={groupIdentifies}>
           <div

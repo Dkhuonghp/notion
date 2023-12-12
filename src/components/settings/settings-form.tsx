@@ -437,7 +437,7 @@ const SettingsForm = () => {
             />
           </div>
         </div>
-        <LogoutButton>
+        {/* <LogoutButton>
           <div className="flex items-center">
             <LogOut />
           </div>
@@ -482,7 +482,7 @@ const SettingsForm = () => {
               Start Plan
             </Button>
           </div>
-        )}
+        )} */}
       </>
       <AlertDialog open={openAlertMessage}>
         <AlertDialogContent>

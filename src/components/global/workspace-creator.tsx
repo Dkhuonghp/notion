@@ -186,8 +186,8 @@ const WorkspaceCreator = () => {
                   >
                     <div className="flex gap-4 items-center">
                       <Avatar>
-                        <AvatarImage src="/avatars/7.png" />
-                        <AvatarFallback>PJ</AvatarFallback>
+                        {/* <AvatarImage src="/avatars/7.png" /> */}
+                        <AvatarFallback>K</AvatarFallback>
                       </Avatar>
                       <div
                         className="text-sm 
@@ -231,13 +231,13 @@ const WorkspaceCreator = () => {
         </div>
       )}
       <Button
+        className='bg-primary text-primary-foreground'
         type="button"
         disabled={
           !title ||
           (permissions === 'shared' && collaborators.length === 0) ||
           isLoading
         }
-        variant={'secondary'}
         onClick={createItem}
       >
         Create

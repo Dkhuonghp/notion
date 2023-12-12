@@ -101,8 +101,8 @@ export const deleteFile = async (fileId: string) => {
 };
 
 export const deleteFolder = async (folderId: string) => {
-  if (!folderId) return;
-  await db.delete(files).where(eq(files.id, folderId));
+  if (!folderId) return;  
+  await db.delete(folders).where(eq(folders.id, folderId));
 };
 
 export const getFolderDetails = async (folderId: string) => {
@@ -305,7 +305,7 @@ export const updateFolder = async (
 
 export const updateFile = async (file: Partial<File>, fileId: string) => {
   try {
-    const response = await db
+    await db
       .update(files)
       .set(file)
       .where(eq(files.id, fileId));

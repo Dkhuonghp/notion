@@ -13,6 +13,7 @@ import clsx from 'clsx';
 import CustomCard from '@/components/landing-page/custom-card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { CardContent, CardDescription, CardTitle } from '@/components/ui/card';
+import LoginPage from '../(auth)/login/page';
 
 const HomePage = () => {
   return (
@@ -277,6 +278,7 @@ const HomePage = () => {
       <section
         className="mt-20
         px-4
+        pb-6
         sm:px-6
       "
       >
