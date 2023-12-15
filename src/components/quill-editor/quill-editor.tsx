@@ -555,11 +555,7 @@ const QuillEditor: React.FC<QuillEditorProps> = ({
       supabase.removeChannel(room);
     };
   }, [fileId, quill, supabase, user]);
-
-  const handleClickUrl = () => {
-    
-  }
-
+  
   return (
     <>
       <div className="relative">
@@ -715,13 +711,13 @@ const QuillEditor: React.FC<QuillEditorProps> = ({
             items-center"
             >
               <span className="text-[rgb(35,131,226)]">
-                This {dirType} is live
+                  This {dirType} is live on web
               </span>
               <a href={url} target='_blank' className='flex'>
                 <Button size="sm" variant="ghost" className='text-[rgb(35,131,226)]'>
                     View site 
                     {details.published && (
-                      <Globe className="text-sky-500 w-4 h-4 ml-2"/>
+                      <Globe className="text-[rgb(35,131,226)] animate-pulse h-4 w-4 ml-2" />
                     )}
                 </Button>
               </a>

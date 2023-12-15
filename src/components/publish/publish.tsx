@@ -1,7 +1,6 @@
 "use client"
 
 import { useOrigin } from "@/lib/hooks/useOrigin"
-import { usePathname } from "next/navigation";
 import { useMemo, useState } from "react";
 import { Button } from "../ui/button";
 import { Check, Copy, Globe } from "lucide-react";
@@ -27,9 +26,7 @@ export const  Publish = ({
     fileId,
 }: PublishProps) => {
     const [copied, setCopied] = useState(false);
-    const [isSubmitting, setIsSubmitting] = useState(false);
     const { state, workspaceId, folderId, dispatch } = useAppState();
-
     const origin = useOrigin()
     const url = `${origin}/preview/${dirDetails.id}`
 
@@ -37,24 +34,24 @@ export const  Publish = ({
     const details = useMemo(() => {
         let selectedDir;
         if (dirType === 'file') {
-          selectedDir = state.workspaces
-            .find((workspace) => workspace.id === workspaceId)
-            ?.folders.find((folder) => folder.id === folderId)
-            ?.files.find((file) => file.id === fileId);
+            selectedDir = state.workspaces
+                .find((workspace) => workspace.id === workspaceId)
+                ?.folders.find((folder) => folder.id === folderId)
+                ?.files.find((file) => file.id === fileId);
         }
         if (dirType === 'folder') {
-          selectedDir = state.workspaces
-            .find((workspace) => workspace.id === workspaceId)
-            ?.folders.find((folder) => folder.id === fileId);
+            selectedDir = state.workspaces
+                .find((workspace) => workspace.id === workspaceId)
+                ?.folders.find((folder) => folder.id === fileId);
         }
         if (dirType === 'workspace') {
-          selectedDir = state.workspaces.find(
-            (workspace) => workspace.id === fileId
-          );
+            selectedDir = state.workspaces.find(
+                (workspace) => workspace.id === fileId
+            );
         }
     
         if (selectedDir) {
-          return selectedDir;
+            return selectedDir;
         }
     
         return {
@@ -69,13 +66,27 @@ export const  Publish = ({
       }, [state, workspaceId, folderId]);
 
     const onPublish = async() => {
-        setIsSubmitting(true);
-        await updateWorkspace({ published: true }, dirDetails.id)
+        try {
+            dispatch({
+                type: 'UPDATE_WORKSPACE',
+                payload: { workspace: { published: true }, workspaceId: dirDetails.id },
+            });
+            await updateWorkspace({ published: true }, dirDetails.id)
+        } catch (error) {
+            console.log(error);
+        }
     }
 
     const onUnpublish = async() => {
-        setIsSubmitting(true);
-        await updateWorkspace({ published: false }, dirDetails.id)
+        try {
+            dispatch({
+                type: 'UPDATE_WORKSPACE',
+                payload: { workspace: { published: false }, workspaceId: dirDetails.id },
+            });
+            await updateWorkspace({ published: false }, dirDetails.id)
+        } catch (error) {
+            console.log(error);
+        }
     }
 
 
@@ -134,7 +145,6 @@ export const  Publish = ({
                         <Button
                             size="sm"
                             className="w-full text-xs"
-                            disabled={isSubmitting}
                             onClick={onUnpublish}
                         >
                             Unpublish
@@ -150,7 +160,6 @@ export const  Publish = ({
                             Share your work with others.
                         </span>
                         <Button
-                            disabled={isSubmitting}
                             onClick={onPublish}
                             className="w-full text-xs"
                             size="sm"

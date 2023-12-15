@@ -10,7 +10,11 @@ const Trash: React.FC<TrashProps> = ({ children }) => {
   return (
     <CustomDialogTrigger
       header="Trash"
-      content={<TrashRestore />}
+      content={
+        <TrashRestore 
+          dirType="file"
+        />
+      }
     >
       {children}
     </CustomDialogTrigger>
