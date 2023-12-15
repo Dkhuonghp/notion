@@ -8,7 +8,7 @@ import React, {
   useRef,
   useState,
 } from 'react';
-import 'quill/dist/quill.snow.css';
+import 'quill/dist/quill.bubble.css';
 import {BlockNoteEditor, PartialBlock} from '@blocknote/core'
 import {BlockNoteView, useBlockNote} from '@blocknote/react'
 import '@blocknote/core/style.css'
@@ -37,13 +37,13 @@ import Image from 'next/image';
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 import EmojiPicker from '../global/emoji-picker';
 import BannerUpload from '../banner-upload/banner-upload';
-import { Globe, Settings, XCircleIcon } from 'lucide-react';
+import { XCircleIcon } from 'lucide-react';
 import { useSocket } from '@/lib/providers/socket-provider';
 import { useSupabaseUser } from '@/lib/providers/supabase-user-provider';
 import { Publish } from '../publish/publish';
-import { useOrigin } from '@/lib/hooks/useOrigin';
+import Error from '../ui/error';
 
-interface QuillEditorProps {
+interface PreviewEditorPageProps {
   dirDetails: File | Folder | workspace;
   fileId: string;
   dirType: 'workspace' | 'folder' | 'file';
@@ -65,7 +65,7 @@ var TOOLBAR_OPTIONS = [
   ['clean'], // remove formatting button
 ];
 
-const QuillEditor: React.FC<QuillEditorProps> = ({
+const PreviewEditorPage: React.FC<PreviewEditorPageProps> = ({
   dirDetails,
   dirType,
   fileId,
@@ -85,8 +85,8 @@ const QuillEditor: React.FC<QuillEditorProps> = ({
   const [deletingBanner, setDeletingBanner] = useState(false);
   const [saving, setSaving] = useState(false);
   const [localCursors, setLocalCursors] = useState<any>([]);
-  const origin = useOrigin()
-  const url = `${origin}/preview/${dirDetails.id}`
+  console.log(dirDetails);
+  
 
   const details = useMemo(() => {
     let selectedDir;
@@ -171,7 +171,7 @@ const QuillEditor: React.FC<QuillEditorProps> = ({
       const QuillCursors = (await import('quill-cursors')).default;
       Quill.register('modules/cursors', QuillCursors);
       const q = new Quill(editor, {
-        theme: 'snow',
+        theme: 'bubble',
         modules: {
           toolbar: TOOLBAR_OPTIONS,
           cursors: {
@@ -179,6 +179,7 @@ const QuillEditor: React.FC<QuillEditorProps> = ({
           },
         },
       });
+      q.enable(false)
       setQuill(q);
     }
   }, []);
@@ -555,305 +556,41 @@ const QuillEditor: React.FC<QuillEditorProps> = ({
       supabase.removeChannel(room);
     };
   }, [fileId, quill, supabase, user]);
+  
 
-  const handleClickUrl = () => {
-    
-  }
-
-  return (
-    <>
-      <div className="relative">
-        {details.inTrash && (
-          <article
-            className="py-2 
-          z-40 
-          bg-[#EB5757] 
-          flex  
-          md:flex-row 
-          flex-col 
-          justify-center 
-          items-center 
-          gap-4 
-          flex-wrap"
-          >
-            <div
-              className="flex 
-            flex-col 
-            md:flex-row 
-            gap-2 
-            justify-center 
-            items-center"
-            >
-              <span className="text-white">
-                This {dirType} is in the trash.
-              </span>
-              <Button
-                size="sm"
-                variant="outline"
-                className="bg-transparent
-                border-white
-                text-white
-                hover:bg-white
-                hover:text-[#EB5757]
-                "
-                onClick={restoreFileHandler}
-              >
-                Restore
-              </Button>
-
-              <Button
-                size="sm"
-                variant="outline"
-                className="bg-transparent
-                border-white
-                text-white
-                hover:bg-white
-                hover:text-[#EB5757]
-                "
-                onClick={deleteFileHandler}
-              >
-                Delete
-              </Button>
-            </div>
-            <span className="text-sm text-white">{details.inTrash}</span>
-          </article>
-        )}
-        <div
-          className="flex 
-        flex-col-reverse 
-        sm:flex-row 
-        sm:justify-between 
-        justify-center 
-        sm:items-center 
-        sm:p-2 
-        p-8"
-        >
-          <div>{breadCrumbs}</div>
-          <div className="flex items-center gap-4">
-            <div className="flex items-center justify-center h-10">
-              {collaborators?.map((collaborator) => (
-                <TooltipProvider key={collaborator.id}>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <Avatar
-                        className="
-                    -ml-3 
-                    bg-background 
-                    border-2 
-                    flex 
-                    items-center 
-                    justify-center 
-                    border-white 
-                    h-8 
-                    w-8 
-                    rounded-full
-                    "
-                      >
-                        <AvatarImage
-                          src={
-                            collaborator.avatarUrl ? collaborator.avatarUrl : ''
-                          }
-                          className="rounded-full"
-                        />
-                        <AvatarFallback>
-                          {collaborator.email.substring(0, 2).toUpperCase()}
-                        </AvatarFallback>
-                      </Avatar>
-                    </TooltipTrigger>
-                    <TooltipContent>{collaborator.email}</TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
-              ))}
-            </div>
-            {saving ? (
-              <Badge
-                variant="secondary"
-                className="bg-orange-600 top-4
-                text-white
-                right-4
-                z-50
-                "
-              >
-                Đang lưu...
-              </Badge>
-            ) : (
-              <Badge
-                variant="secondary"
-                className="bg-emerald-600 
-                top-4
-              text-white
-              right-4
-              z-50
-              "
-              >
-                Đã lưu
-              </Badge>
-            )}
-          </div>
-        </div>
-      </div>
-      <div className="relative">
-        {details.published === true && (
-          <article
-            className="py-2 
-          z-40 
-          bg-[rgba(35,131,226,0.09)] 
-          flex  
-          md:flex-row 
-          flex-col 
-          justify-center 
-          items-center 
-          gap-4 
-          flex-wrap"
-          >
-            <div
-              className="flex 
-            flex-col 
-            md:flex-row 
-            gap-2 
-            justify-center 
-            items-center"
-            >
-              <span className="text-[rgb(35,131,226)]">
-                This {dirType} is live
-              </span>
-              <a href={url} target='_blank' className='flex'>
-                <Button size="sm" variant="ghost" className='text-[rgb(35,131,226)]'>
-                    View site 
-                    {details.published && (
-                      <Globe className="text-sky-500 w-4 h-4 ml-2"/>
+    return (
+        <>
+            {details.published === true ?
+                <>
+                    {details.bannerUrl && (
+                        <div className="relative w-full h-[200px]">
+                            <Image
+                                src={
+                                supabase.storage
+                                    .from('file-banners')
+                                    .getPublicUrl(details.bannerUrl).data.publicUrl
+                                }
+                                fill
+                                className="w-full md:h-48 h-20 object-cover"
+                                alt="Banner Image"
+                            />
+                        </div>
                     )}
-                </Button>
-              </a>
-              <Button size="sm" variant="ghost" className='text-[rgb(35,131,226)]'>
-                  Site settings 
-                  {details.published && (
-                    <Settings className="text-sky-500 w-4 h-4 ml-2"/>
-                  )}
-              </Button>
-            </div>
-            <span className="text-sm text-white">{details.inTrash}</span>
-          </article>
-        )}
-        <div
-          className="flex 
-        flex-col-reverse 
-        sm:flex-row 
-        sm:justify-between 
-        justify-center 
-        sm:items-center 
-        sm:p-2 
-        p-8"
-        >
-        </div>
-      </div>
-      {details.bannerUrl && (
-        <div className="relative w-full h-[200px]">
-          <Image
-            src={
-              supabase.storage
-                .from('file-banners')
-                .getPublicUrl(details.bannerUrl).data.publicUrl
-            }
-            fill
-            className="w-full md:h-48
-            h-20
-            object-cover"
-            alt="Banner Image"
-          />
-        </div>
-      )}
-      <div
-        className="flex 
-        justify-center
-        items-center
-        flex-col
-        mt-2
-        relative
-      "
-      >
-        <div
-          className="
-            w-full 
-            self-center 
-            max-w-[1100px] 
-            flex 
-            flex-col
-            px-7 
-            lg:my-8
-          "
-        >
-          <div className="text-[80px]">
-            <EmojiPicker getValue={iconOnChange}>
-              <div
-                className="w-[100px]
-                cursor-pointer
-                transition-colors
-                h-[100px]
-                flex
-                items-center
-                justify-center
-                hover:bg-muted
-                rounded-xl"
-              >
-                {details.iconId}
-              </div>
-            </EmojiPicker>
-          </div>
-          <div className="flex ">
-            <BannerUpload
-              id={fileId}
-              dirType={dirType}
-              className="mt-2
-              text-sm
-              text-muted-foreground
-              p-2
-              hover:text-card-foreground
-              transition-all
-              rounded-md"
-            >
-              {details.bannerUrl ? 'Update Banner' : 'Add Banner'}
-            </BannerUpload>
-            {details.bannerUrl && (
-              <Button
-                disabled={deletingBanner}
-                onClick={deleteBanner}
-                variant="ghost"
-                className="gap-2 hover:bg-background
-                flex
-                item-center
-                justify-center
-                mt-2
-                text-sm
-                text-muted-foreground
-                w-36
-                p-2
-                rounded-md"
-              >
-                <XCircleIcon size={16} />
-                <span className="whitespace-nowrap font-normal">
-                  Remove Banner
-                </span>
-              </Button>
-            )}
-          </div>
-          <input 
-            className="font-bold text-[40px] bg-transparent"
-            value={details ? details.title : ''}
-            onChange={workspaceNameChange}
-          />
-          <span className="text-muted-foreground text-sm">
-            {dirType.toUpperCase()}
-          </span>
-        </div>
-        <div
-          id="container"
-          className="max-w-[1100px]"
-          ref={wrapperRef}
-        ></div>
-      </div>
-    </>
-  );
+                    <div className="flex justify-center items-center flex-col mt-2 relative">
+                        <div className="w-full self-center max-w-[1100px] flex flex-col px-[15px] lg:my-8">
+                            <div className="text-[80px]">
+                                <div className="w-[100px] transition-colors h-[100px] flex items-center justify-center rounded-xl">
+                                    {details.iconId}
+                                </div>
+                            </div>
+                            <span className="font-bold text-[40px] bg-transparent">{details.title}</span>
+                        </div>
+                        <div id="container" className="w-full" ref={wrapperRef}></div>
+                    </div> 
+                </>
+            : <Error/>}
+        </>
+    );
 };
 
-export default QuillEditor;
+export default PreviewEditorPage;

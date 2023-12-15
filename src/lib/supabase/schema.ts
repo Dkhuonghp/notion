@@ -30,6 +30,7 @@ export const workspaces = pgTable('workspaces', {
   inTrash: text('in_trash'),
   logo: text('logo'),
   bannerUrl: text('banner_url'),
+  published: boolean('published')
 });
 
 export const folders = pgTable('folders', {
@@ -50,6 +51,7 @@ export const folders = pgTable('folders', {
     .references(() => workspaces.id, {
       onDelete: 'cascade',
     }),
+  published: boolean('published')
 });
 
 export const files = pgTable('files', {
@@ -75,6 +77,7 @@ export const files = pgTable('files', {
     .references(() => folders.id, {
       onDelete: 'cascade',
     }),
+  published: boolean('published')
 });
 
 export const subscriptions = pgTable('subscriptions', {

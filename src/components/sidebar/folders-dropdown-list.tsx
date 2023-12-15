@@ -71,6 +71,7 @@ const FoldersDropdownList: React.FC<FoldersDropdownListProps> = ({
       inTrash: null,
       workspaceId,
       bannerUrl: '',
+      published: false
     };
     dispatch({
       type: 'ADD_FOLDER',
@@ -86,7 +87,7 @@ const FoldersDropdownList: React.FC<FoldersDropdownListProps> = ({
     } else {
       toast({
         title: 'Success',
-        description: 'Created folder.',
+        description: 'Tạo thư mục thành công',
       });
     }
   };

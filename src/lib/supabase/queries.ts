@@ -138,6 +138,7 @@ export const getPrivateWorkspaces = async (userId: string) => {
       inTrash: workspaces.inTrash,
       logo: workspaces.logo,
       bannerUrl: workspaces.bannerUrl,
+      published: workspaces.published
     })
     .from(workspaces)
     .where(
@@ -167,6 +168,7 @@ export const getCollaboratingWorkspaces = async (userId: string) => {
       inTrash: workspaces.inTrash,
       logo: workspaces.logo,
       bannerUrl: workspaces.bannerUrl,
+      published: workspaces.published
     })
     .from(users)
     .innerJoin(collaborators, eq(users.id, collaborators.userId))
@@ -188,6 +190,7 @@ export const getSharedWorkspaces = async (userId: string) => {
       inTrash: workspaces.inTrash,
       logo: workspaces.logo,
       bannerUrl: workspaces.bannerUrl,
+      published: workspaces.published
     })
     .from(workspaces)
     .orderBy(workspaces.createdAt)
@@ -272,7 +275,7 @@ export const getActiveProductsWithPrice = async () => {
 
 export const createFolder = async (folder: Folder) => {
   try {
-    const results = await db.insert(folders).values(folder);
+    await db.insert(folders).values(folder);
     return { data: null, error: null };
   } catch (error) {
     console.log(error);

@@ -79,6 +79,7 @@ export interface Database {
       };
       files: {
         Row: {
+          published?: boolean | null;
           banner_url: string | null;
           created_at: string;
           data: string | null;
@@ -90,6 +91,7 @@ export interface Database {
           workspace_id: string;
         };
         Insert: {
+          published?: boolean | null;
           banner_url?: string | null;
           created_at?: string;
           data?: string | null;
@@ -101,6 +103,7 @@ export interface Database {
           workspace_id: string;
         };
         Update: {
+          published?: boolean | null;
           banner_url?: string | null;
           created_at?: string;
           data?: string | null;
@@ -128,6 +131,7 @@ export interface Database {
       };
       folders: {
         Row: {
+          published?: boolean | null;
           banner_url: string | null;
           created_at: string;
           data: string | null;
@@ -138,6 +142,7 @@ export interface Database {
           workspace_id: string;
         };
         Insert: {
+          published?: boolean | null;
           banner_url?: string | null;
           created_at?: string;
           data?: string | null;
@@ -148,6 +153,7 @@ export interface Database {
           workspace_id: string;
         };
         Update: {
+          published?: boolean | null;
           banner_url?: string | null;
           created_at?: string;
           data?: string | null;
@@ -358,6 +364,7 @@ export interface Database {
       };
       workspaces: {
         Row: {
+          published?: boolean | null;
           banner_url: string | null;
           created_at: string;
           data: string | null;
@@ -369,6 +376,7 @@ export interface Database {
           workspace_owner: string;
         };
         Insert: {
+          published?: boolean | null;
           banner_url?: string | null;
           created_at?: string;
           data?: string | null;
@@ -380,6 +388,7 @@ export interface Database {
           workspace_owner: string;
         };
         Update: {
+          published?: boolean | null;
           banner_url?: string | null;
           created_at?: string;
           data?: string | null;
