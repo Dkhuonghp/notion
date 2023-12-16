@@ -48,22 +48,6 @@ interface PreviewEditorPageProps {
   fileId: string;
   dirType: 'workspace' | 'folder' | 'file';
 }
-var TOOLBAR_OPTIONS = [
-  
-  [{ header: [1, 2, 3, 4, 5, 6, false] }],
-  [{ size: ['small', false, 'large', 'huge'] }], // custom dropdown
-  [{ font: [] }],
-  ['bold', 'italic', 'underline', 'strike'], // toggled buttons
-  ['blockquote', 'code-block'],
-  [{ list: 'ordered' }, { list: 'bullet' }],
-  [{ script: 'sub' }, { script: 'super' }], // superscript/subscript
-  [{ indent: '-1' }, { indent: '+1' }], // outdent/indent
-  [{ color: [] }, { background: [] }], // dropdown with defaults from theme
-  [{ direction: 'rtl' }], // text direction
-  ['link', 'image', 'video', 'formula'],
-  [{ align: [] }],
-  ['clean'], // remove formatting button
-];
 
 const PreviewEditorPage: React.FC<PreviewEditorPageProps> = ({
   dirDetails,
@@ -84,9 +68,7 @@ const PreviewEditorPage: React.FC<PreviewEditorPageProps> = ({
   >([]);
   const [deletingBanner, setDeletingBanner] = useState(false);
   const [saving, setSaving] = useState(false);
-  const [localCursors, setLocalCursors] = useState<any>([]);
-  console.log(dirDetails);
-  
+  const [localCursors, setLocalCursors] = useState<any>([]);  
 
   const details = useMemo(() => {
     let selectedDir;
@@ -122,45 +104,6 @@ const PreviewEditorPage: React.FC<PreviewEditorPageProps> = ({
     } as workspace | Folder | File;
   }, [state, workspaceId, folderId]);
 
-  const breadCrumbs = useMemo(() => {
-    if (!pathname || !state.workspaces || !workspaceId) return;
-    const segments = pathname
-      .split('/')
-      .filter((val) => val !== 'dashboard' && val);
-    const workspaceDetails = state.workspaces.find(
-      (workspace) => workspace.id === workspaceId
-    );
-    const workspaceBreadCrumb = workspaceDetails
-      ? `${workspaceDetails.iconId} ${workspaceDetails.title}`
-      : '';
-    if (segments.length === 1) {
-      return workspaceBreadCrumb;
-    }
-
-    const folderSegment = segments[1];
-    const folderDetails = workspaceDetails?.folders.find(
-      (folder) => folder.id === folderSegment
-    );
-    const folderBreadCrumb = folderDetails
-      ? `/ ${folderDetails.iconId} ${folderDetails.title}`
-      : '';
-
-    if (segments.length === 2) {
-      return `${workspaceBreadCrumb} ${folderBreadCrumb}`;
-    }
-
-    const fileSegment = segments[2];
-    const fileDetails = folderDetails?.files.find(
-      (file) => file.id === fileSegment
-    );
-    const fileBreadCrumb = fileDetails
-      ? `/ ${fileDetails.iconId} ${fileDetails.title}`
-      : '';
-
-    return `${workspaceBreadCrumb} ${folderBreadCrumb} ${fileBreadCrumb}`;
-  }, [state, pathname, workspaceId]);
-
-  //
   const wrapperRef = useCallback(async (wrapper: any) => {
     if (typeof window !== 'undefined') {
       if (wrapper === null) return;
@@ -170,172 +113,11 @@ const PreviewEditorPage: React.FC<PreviewEditorPageProps> = ({
       const Quill = (await import('quill')).default;
       const QuillCursors = (await import('quill-cursors')).default;
       Quill.register('modules/cursors', QuillCursors);
-      const q = new Quill(editor, {
-        theme: 'bubble',
-        modules: {
-          toolbar: TOOLBAR_OPTIONS,
-          cursors: {
-            transformOnTextChange: true,
-          },
-        },
-      });
+      const q = new Quill(editor);
       q.enable(false)
       setQuill(q);
     }
   }, []);
-
-  const restoreFileHandler = async () => {
-    if (dirType === 'file') {
-      if (!folderId || !workspaceId) return;
-      dispatch({
-        type: 'UPDATE_FILE',
-        payload: { file: { inTrash: '' }, fileId, folderId, workspaceId },
-      });
-      await updateFile({ inTrash: '' }, fileId);
-    }
-    if (dirType === 'folder') {
-      if (!workspaceId) return;
-      dispatch({
-        type: 'UPDATE_FOLDER',
-        payload: { folder: { inTrash: '' }, folderId: fileId, workspaceId },
-      });
-      await updateFolder({ inTrash: '' }, fileId);
-    }
-  };
-
-  const deleteFileHandler = async () => {
-    if (dirType === 'file') {
-      if (!folderId || !workspaceId) return;
-      dispatch({
-        type: 'DELETE_FILE',
-        payload: { fileId, folderId, workspaceId },
-      });
-      await deleteFile(fileId);
-      router.replace(`/dashboard/${workspaceId}`);
-    }
-    if (dirType === 'folder') {
-      if (!workspaceId) return;
-      dispatch({
-        type: 'DELETE_FOLDER',
-        payload: { folderId: fileId, workspaceId },
-      });
-      await deleteFolder(fileId);
-      router.replace(`/dashboard/${workspaceId}`);
-    }
-  };
-
-  const iconOnChange = async (icon: string) => {
-    if (!fileId) return;
-    if (dirType === 'workspace') {
-      dispatch({
-        type: 'UPDATE_WORKSPACE',
-        payload: { workspace: { iconId: icon }, workspaceId: fileId },
-      });
-      await updateWorkspace({ iconId: icon }, fileId);
-    }
-    if (dirType === 'folder') {
-      if (!workspaceId) return;
-      dispatch({
-        type: 'UPDATE_FOLDER',
-        payload: {
-          folder: { iconId: icon },
-          workspaceId,
-          folderId: fileId,
-        },
-      });
-      await updateFolder({ iconId: icon }, fileId);
-    }
-    if (dirType === 'file') {
-      if (!workspaceId || !folderId) return;
-
-      dispatch({
-        type: 'UPDATE_FILE',
-        payload: { file: { iconId: icon }, workspaceId, folderId, fileId },
-      });
-      await updateFile({ iconId: icon }, fileId);
-    }
-  };
-
-  const deleteBanner = async () => {
-    if (!fileId) return;
-    setDeletingBanner(true);
-    if (dirType === 'file') {
-      if (!folderId || !workspaceId) return;
-      dispatch({
-        type: 'UPDATE_FILE',
-        payload: { file: { bannerUrl: '' }, fileId, folderId, workspaceId },
-      });
-      await supabase.storage.from('file-banners').remove([`banner-${fileId}`]);
-      await updateFile({ bannerUrl: '' }, fileId);
-    }
-    if (dirType === 'folder') {
-      if (!workspaceId) return;
-      dispatch({
-        type: 'UPDATE_FOLDER',
-        payload: { folder: { bannerUrl: '' }, folderId: fileId, workspaceId },
-      });
-      await supabase.storage.from('file-banners').remove([`banner-${fileId}`]);
-      await updateFolder({ bannerUrl: '' }, fileId);
-    }
-    if (dirType === 'workspace') {
-      dispatch({
-        type: 'UPDATE_WORKSPACE',
-        payload: {
-          workspace: { bannerUrl: '' },
-          workspaceId: fileId,
-        },
-      });
-      await supabase.storage.from('file-banners').remove([`banner-${fileId}`]);
-      await updateWorkspace({ bannerUrl: '' }, fileId);
-    }
-    setDeletingBanner(false);
-  };
-
-  //on change title
-  const workspaceNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (dirType === 'workspace') {
-      if (!workspaceId || !e.target.value) return;
-      dispatch({
-        type: 'UPDATE_WORKSPACE',
-        payload: { workspace: { title: e.target.value }, workspaceId },
-      });
-      if (titleTimerRef.current) clearTimeout(titleTimerRef.current);
-      titleTimerRef.current = setTimeout(async () => {
-        await updateWorkspace({ title: e.target.value }, workspaceId);
-      }, 500);
-    }
-    if (dirType === 'folder') {
-      if (!workspaceId) return;
-      dispatch({
-        type: 'UPDATE_FOLDER',
-        payload: {
-          folder: { title: e.target.value },
-          workspaceId,
-          folderId: fileId,
-        },
-      });
-      if (titleTimerRef.current) clearTimeout(titleTimerRef.current);
-      titleTimerRef.current = setTimeout(async () => {
-        await updateFolder({ title: e.target.value }, fileId);
-      }, 500);
-    }
-    if (dirType === 'file') {
-      if (!workspaceId || !folderId) return;
-      dispatch({
-        type: 'UPDATE_FILE',
-        payload: { 
-          file: { title: e.target.value }, 
-          workspaceId, 
-          folderId, 
-          fileId 
-        },
-      });
-      if (titleTimerRef.current) clearTimeout(titleTimerRef.current);
-      titleTimerRef.current = setTimeout(async () => {
-        await updateFile({ title: e.target.value }, fileId);
-      }, 500);
-    }
-  };
 
   useEffect(() => {
     if (!fileId) return;
@@ -555,8 +337,7 @@ const PreviewEditorPage: React.FC<PreviewEditorPageProps> = ({
     return () => {
       supabase.removeChannel(room);
     };
-  }, [fileId, quill, supabase, user]);
-  
+  }, [fileId, quill, supabase, user]);  
 
     return (
         <>

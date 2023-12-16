@@ -21,7 +21,7 @@ const NativeNavigation: React.FC<NativeNavigationProps> = ({
       <ul className="flex flex-col gap-2">
         <li>
           <Link
-            className="flex items-center group/native text-Neutrals/neutrals-7 rounded-md transition-all hover:bg-muted items-center gap-5 p-2 w-full"
+            className="flex items-center group/native text-Neutrals/neutrals-7 rounded-md transition-all hover:bg-muted gap-5 p-2 w-full"
             href={`/dashboard/${myWorkspaceId}`}
           >
             <CypressHomeIcon />
@@ -31,7 +31,7 @@ const NativeNavigation: React.FC<NativeNavigationProps> = ({
 
         <Settings>
           <li
-            className="flex items-center group/native text-Neutrals/neutrals-7 rounded-md transition-all hover:bg-muted items-center gap-5 p-2 w-full"
+            className="flex items-center group/native text-Neutrals/neutrals-7 rounded-md transition-all hover:bg-muted gap-5 p-2 w-full"
           >
             <CypressSettingsIcon />
             <span>Settings</span>
@@ -40,7 +40,7 @@ const NativeNavigation: React.FC<NativeNavigationProps> = ({
 
         <Trash>
           <li
-            className="flex items-center group/native text-Neutrals/neutrals-7 rounded-md transition-all hover:bg-muted items-center gap-5 p-2 w-full"
+            className="flex items-center group/native text-Neutrals/neutrals-7 rounded-md transition-all hover:bg-muted gap-5 p-2 w-full"
           >
             <CypressTrashIcon />
             <span>Trash</span>

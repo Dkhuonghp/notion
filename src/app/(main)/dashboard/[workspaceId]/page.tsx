@@ -11,11 +11,6 @@ const Workspace = async ({ params }: { params: { workspaceId: string } }) => {
   if (error || !data.length) redirect('/dashboard');
   return (
     <div className="relative">
-      <Publish
-        dirType="workspace"
-        fileId={params.workspaceId}
-        dirDetails={data[0] || {}}
-      />
       <QuillEditor
         dirType="workspace"
         fileId={params.workspaceId}

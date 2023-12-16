@@ -2,6 +2,7 @@
 import { useAppState } from '@/lib/providers/state-provider';
 import { File, Folder, workspace } from '@/lib/supabase/supabase.types';
 import React, {
+  ElementRef,
   useCallback,
   useEffect,
   useMemo,
@@ -34,6 +35,7 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 import { Badge } from '../ui/badge';
 import Image from 'next/image';
+import TextareaAutosize from 'react-textarea-autosize'
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 import EmojiPicker from '../global/emoji-picker';
 import BannerUpload from '../banner-upload/banner-upload';
@@ -70,6 +72,7 @@ const QuillEditor: React.FC<QuillEditorProps> = ({
   dirType,
   fileId,
 }) => {
+  const inputRef = useRef<ElementRef<'textarea'>>(null)
   const supabase = createClientComponentClient();
   const { state, workspaceId, folderId, dispatch } = useAppState();
   const saveTimerRef = useRef<ReturnType<typeof setTimeout>>();
@@ -86,7 +89,9 @@ const QuillEditor: React.FC<QuillEditorProps> = ({
   const [saving, setSaving] = useState(false);
   const [localCursors, setLocalCursors] = useState<any>([]);
   const origin = useOrigin()
-  const url = `${origin}/preview/${dirDetails.id}`
+  const url = `${origin}/preview/${pathname}`
+  const urlParts = url.split('/dashboard/')
+  const parts = urlParts[urlParts.length - 1]
 
   const details = useMemo(() => {
     let selectedDir;
@@ -291,16 +296,16 @@ const QuillEditor: React.FC<QuillEditorProps> = ({
   };
 
   //on change title
-  const workspaceNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const workspaceNameChange = (newValue: string) => {
     if (dirType === 'workspace') {
-      if (!workspaceId || !e.target.value) return;
+      if (!workspaceId || !newValue) return;
       dispatch({
         type: 'UPDATE_WORKSPACE',
-        payload: { workspace: { title: e.target.value }, workspaceId },
+        payload: { workspace: { title: newValue}, workspaceId },
       });
       if (titleTimerRef.current) clearTimeout(titleTimerRef.current);
       titleTimerRef.current = setTimeout(async () => {
-        await updateWorkspace({ title: e.target.value }, workspaceId);
+        await updateWorkspace({ title: newValue }, workspaceId);
       }, 500);
     }
     if (dirType === 'folder') {
@@ -308,14 +313,14 @@ const QuillEditor: React.FC<QuillEditorProps> = ({
       dispatch({
         type: 'UPDATE_FOLDER',
         payload: {
-          folder: { title: e.target.value },
+          folder: { title: newValue},
           workspaceId,
           folderId: fileId,
         },
       });
       if (titleTimerRef.current) clearTimeout(titleTimerRef.current);
       titleTimerRef.current = setTimeout(async () => {
-        await updateFolder({ title: e.target.value }, fileId);
+        await updateFolder({ title: newValue }, fileId);
       }, 500);
     }
     if (dirType === 'file') {
@@ -323,7 +328,7 @@ const QuillEditor: React.FC<QuillEditorProps> = ({
       dispatch({
         type: 'UPDATE_FILE',
         payload: { 
-          file: { title: e.target.value }, 
+          file: { title: newValue }, 
           workspaceId, 
           folderId, 
           fileId 
@@ -331,7 +336,7 @@ const QuillEditor: React.FC<QuillEditorProps> = ({
       });
       if (titleTimerRef.current) clearTimeout(titleTimerRef.current);
       titleTimerRef.current = setTimeout(async () => {
-        await updateFile({ title: e.target.value }, fileId);
+        await updateFile({ title: newValue }, fileId);
       }, 500);
     }
   };
@@ -685,6 +690,11 @@ const QuillEditor: React.FC<QuillEditorProps> = ({
                 Đã lưu
               </Badge>
             )}
+            <Publish
+              dirDetails={dirDetails}
+              fileId={fileId}
+              dirType={dirType}
+            />
           </div>
         </div>
       </div>
@@ -713,7 +723,7 @@ const QuillEditor: React.FC<QuillEditorProps> = ({
               <span className="text-[rgb(35,131,226)]">
                   This {dirType} is live on web
               </span>
-              <a href={url} target='_blank' className='flex'>
+              <a href={`${origin}/preview/${parts}`} target='_blank' className='flex'>
                 <Button size="sm" variant="ghost" className='text-[rgb(35,131,226)]'>
                     View site 
                     {details.published && (
@@ -833,10 +843,11 @@ const QuillEditor: React.FC<QuillEditorProps> = ({
               </Button>
             )}
           </div>
-          <input 
-            className="font-bold text-[40px] bg-transparent"
+          <TextareaAutosize
+            ref={inputRef}
+            className="text-5xl bg-transparent font-bold break-words outline-none resize-none"
             value={details ? details.title : ''}
-            onChange={workspaceNameChange}
+            onChange={(e) => workspaceNameChange(e.target.value)}
           />
           <span className="text-muted-foreground text-sm">
             {dirType.toUpperCase()}

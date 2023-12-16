@@ -4,7 +4,7 @@ import { useOrigin } from "@/lib/hooks/useOrigin"
 import { useMemo, useState } from "react";
 import { Button } from "../ui/button";
 import { Check, Copy, Globe } from "lucide-react";
-import { updateWorkspace } from "@/lib/supabase/queries";
+import { updateFile, updateFolder, updateWorkspace } from "@/lib/supabase/queries";
 import { useAppState } from "@/lib/providers/state-provider";
 import { File, Folder, workspace } from '@/lib/supabase/supabase.types';
 import {
@@ -12,6 +12,7 @@ import {
   Popover,
   PopoverContent
 } from "@/components/ui/popover"
+import { usePathname } from "next/navigation";
 
 
 interface PublishProps {
@@ -28,8 +29,10 @@ export const  Publish = ({
     const [copied, setCopied] = useState(false);
     const { state, workspaceId, folderId, dispatch } = useAppState();
     const origin = useOrigin()
-    const url = `${origin}/preview/${dirDetails.id}`
-
+    const pathname = usePathname()
+    const url = `${origin}/preview/${pathname}`
+    const urlParts = url.split('/dashboard/');
+    const parts = urlParts[urlParts.length - 1];
 
     const details = useMemo(() => {
         let selectedDir;
@@ -63,35 +66,89 @@ export const  Publish = ({
             bannerUrl: dirDetails.bannerUrl,
             published: dirDetails.published    
         } as workspace | Folder | File;
-      }, [state, workspaceId, folderId]);
+    }, [state, workspaceId, folderId]);      
 
     const onPublish = async() => {
-        try {
-            dispatch({
-                type: 'UPDATE_WORKSPACE',
-                payload: { workspace: { published: true }, workspaceId: dirDetails.id },
-            });
-            await updateWorkspace({ published: true }, dirDetails.id)
-        } catch (error) {
-            console.log(error);
+        if (dirType === 'workspace') {
+            if (!fileId) return;
+            try {
+                dispatch({
+                    type: 'UPDATE_WORKSPACE',
+                    payload: { workspace: { published: true }, workspaceId: fileId },
+                });
+                await updateWorkspace({ published: true }, fileId)
+            } catch (error) {
+                console.log(error);
+            }
+        }
+        if (dirType === 'folder') {
+            if (!workspaceId) return;
+            try {
+                dispatch({
+                    type: 'UPDATE_FOLDER',
+                    payload: { folder: { published: true }, workspaceId, folderId: fileId },
+                });
+                await updateFolder({ published: true }, fileId)
+            } catch (error) {
+                console.log(error);
+            }
+        }
+        if (dirType === 'file') {
+            if (!folderId || !workspaceId) return;
+            try {
+                dispatch({
+                    type: 'UPDATE_FILE',
+                    payload: { file: { published: true }, folderId, workspaceId, fileId },
+                });
+                await updateFile({ published: true }, fileId)
+            } catch (error) {
+                console.log(error);
+            }
         }
     }
 
     const onUnpublish = async() => {
-        try {
-            dispatch({
-                type: 'UPDATE_WORKSPACE',
-                payload: { workspace: { published: false }, workspaceId: dirDetails.id },
-            });
-            await updateWorkspace({ published: false }, dirDetails.id)
-        } catch (error) {
-            console.log(error);
+        if (dirType === 'workspace') {
+            if (!fileId) return;
+            try {
+                dispatch({
+                    type: 'UPDATE_WORKSPACE',
+                    payload: { workspace: { published: false }, workspaceId: fileId },
+                });
+                await updateWorkspace({ published: false }, fileId)
+            } catch (error) {
+                console.log(error);
+            }
+        }
+        if (dirType === 'folder') {
+            if (!workspaceId) return;
+            try {
+                dispatch({
+                    type: 'UPDATE_FOLDER',
+                    payload: { folder: { published: false }, workspaceId, folderId: fileId },
+                });
+                await updateFolder({ published: false }, fileId)
+            } catch (error) {
+                console.log(error);
+            }
+        }
+        if (dirType === 'file') {
+            if (!folderId || !workspaceId) return;
+            try {
+                dispatch({
+                    type: 'UPDATE_FILE',
+                    payload: { file: { published: false }, folderId, workspaceId, fileId },
+                });
+                await updateFile({ published: false }, fileId)
+            } catch (error) {
+                console.log(error);
+            }
         }
     }
 
 
     const onCopy = () => {
-        navigator.clipboard.writeText(url)
+        navigator.clipboard.writeText(`${origin}/preview/${parts}`)
         setCopied(true)
         setTimeout(() => {
             setCopied(false)
@@ -104,9 +161,7 @@ export const  Publish = ({
                 <Button size="sm" variant="ghost">
                 Publish 
                 {details.published && (
-                    <Globe
-                    className="text-sky-500 w-4 h-4 ml-2"
-                    />
+                    <Globe className="text-sky-500 w-4 h-4 ml-2"/>
                 )}
                 </Button>
             </PopoverTrigger>
@@ -127,7 +182,7 @@ export const  Publish = ({
                         <div className="flex items-center">
                             <input 
                                 className="flex-1 px-2 text-xs border rounded-l-md h-8 bg-muted truncate"
-                                value={url}
+                                value={`${origin}/preview/${parts}`}
                                 disabled
                             />
                             <Button

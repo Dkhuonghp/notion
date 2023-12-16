@@ -4,6 +4,7 @@ import React from 'react';
 import QuillEditor from '@/components/quill-editor/quill-editor';
 import { getFolderDetails } from '@/lib/supabase/queries';
 import { redirect } from 'next/navigation';
+import { Publish } from '@/components/publish/publish';
 
 const Folder = async ({ params }: { params: { folderId: string } }) => {
   const { data, error } = await getFolderDetails(params.folderId);
