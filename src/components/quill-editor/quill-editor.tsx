@@ -855,7 +855,7 @@ const QuillEditor: React.FC<QuillEditorProps> = ({
         </div>
         <div
           id="container"
-          className="max-w-[1100px]"
+          className="max-w-[1100px] mb-20"
           ref={wrapperRef}
         ></div>
       </div>
