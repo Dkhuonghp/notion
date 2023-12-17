@@ -39,7 +39,8 @@ const useSupabaseRealtime = () => {
                 data: payload.new.data,
                 inTrash: payload.new.in_trash,
                 bannerUrl: payload.new.banner_url,
-                published: payload.new.published
+                published: payload.new.published,
+                editActive: payload.new.edit_active
               };
               dispatch({
                 type: 'ADD_FILE',
