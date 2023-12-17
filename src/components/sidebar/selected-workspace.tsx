@@ -45,17 +45,18 @@ const SelectedWorkspace: React.FC<SelectedWorkspaceProps> = ({
       <Image
         src={workspaceLogo}
         alt="workspace logo"
-        width={26}
-        height={26}
+        className='rounded-[50%] w-7 h-7'
+        width={28}
+        height={28}
         objectFit="cover"
       />
-      <div className="flex flex-col">
+      <div className="flex items-center">
         <p
           className="text-lg 
-        w-[170px] 
-        overflow-hidden 
-        overflow-ellipsis 
-        whitespace-nowrap"
+          w-[170px] 
+          overflow-hidden 
+          overflow-ellipsis 
+          whitespace-nowrap"
         >
           {workspace.title}
         </p>

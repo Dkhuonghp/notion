@@ -79,6 +79,7 @@ export interface Database {
       };
       files: {
         Row: {
+          edit_active?: boolean | null;
           published?: boolean | null;
           banner_url: string | null;
           created_at: string;
@@ -91,6 +92,7 @@ export interface Database {
           workspace_id: string;
         };
         Insert: {
+          edit_active?: boolean | null;
           published?: boolean | null;
           banner_url?: string | null;
           created_at?: string;
@@ -103,6 +105,7 @@ export interface Database {
           workspace_id: string;
         };
         Update: {
+          edit_active?: boolean | null;
           published?: boolean | null;
           banner_url?: string | null;
           created_at?: string;
@@ -131,6 +134,7 @@ export interface Database {
       };
       folders: {
         Row: {
+          edit_active?: boolean | null;
           published?: boolean | null;
           banner_url: string | null;
           created_at: string;
@@ -142,6 +146,7 @@ export interface Database {
           workspace_id: string;
         };
         Insert: {
+          edit_active?: boolean | null;
           published?: boolean | null;
           banner_url?: string | null;
           created_at?: string;
@@ -153,6 +158,7 @@ export interface Database {
           workspace_id: string;
         };
         Update: {
+          edit_active?: boolean | null;
           published?: boolean | null;
           banner_url?: string | null;
           created_at?: string;
@@ -364,6 +370,7 @@ export interface Database {
       };
       workspaces: {
         Row: {
+          edit_active?: boolean | null;
           published?: boolean | null;
           banner_url: string | null;
           created_at: string;
@@ -376,6 +383,7 @@ export interface Database {
           workspace_owner: string;
         };
         Insert: {
+          edit_active?: boolean | null;
           published?: boolean | null;
           banner_url?: string | null;
           created_at?: string;
@@ -388,6 +396,7 @@ export interface Database {
           workspace_owner: string;
         };
         Update: {
+          edit_active?: boolean | null;
           published?: boolean | null;
           banner_url?: string | null;
           created_at?: string;

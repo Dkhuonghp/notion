@@ -138,7 +138,8 @@ export const getPrivateWorkspaces = async (userId: string) => {
       inTrash: workspaces.inTrash,
       logo: workspaces.logo,
       bannerUrl: workspaces.bannerUrl,
-      published: workspaces.published
+      published: workspaces.published,
+      editActive: workspaces.editActive
     })
     .from(workspaces)
     .where(
@@ -168,7 +169,8 @@ export const getCollaboratingWorkspaces = async (userId: string) => {
       inTrash: workspaces.inTrash,
       logo: workspaces.logo,
       bannerUrl: workspaces.bannerUrl,
-      published: workspaces.published
+      published: workspaces.published,
+      editActive: workspaces.editActive
     })
     .from(users)
     .innerJoin(collaborators, eq(users.id, collaborators.userId))
@@ -190,7 +192,8 @@ export const getSharedWorkspaces = async (userId: string) => {
       inTrash: workspaces.inTrash,
       logo: workspaces.logo,
       bannerUrl: workspaces.bannerUrl,
-      published: workspaces.published
+      published: workspaces.published,
+      editActive: workspaces.editActive
     })
     .from(workspaces)
     .orderBy(workspaces.createdAt)

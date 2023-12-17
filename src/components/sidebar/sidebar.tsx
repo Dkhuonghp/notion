@@ -67,7 +67,7 @@ const Sidebar: React.FC<SidebarProps> = async ({ params, className }) => {
     >
       <div>
         <UserCard subscription={subscriptionData} />
-        {/* <WorkspaceDropdown
+        <WorkspaceDropdown
           privateWorkspaces={privateWorkspaces}
           sharedWorkspaces={sharedWorkspaces}
           collaboratingWorkspaces={collaboratingWorkspaces}
@@ -76,7 +76,7 @@ const Sidebar: React.FC<SidebarProps> = async ({ params, className }) => {
             ...collaboratingWorkspaces,
             ...sharedWorkspaces,
           ].find((workspace) => workspace.id === params.workspaceId)}
-        /> */}
+        />
         <div className="rounded-md flex flex-col">
           <CustomDialogTrigger
             header="Create A Workspace"
@@ -105,7 +105,7 @@ const Sidebar: React.FC<SidebarProps> = async ({ params, className }) => {
             </div>
           </CustomDialogTrigger>
           <NativeNavigation myWorkspaceId={params.workspaceId} />
-          <WorkspaceSelect
+          {/* <WorkspaceSelect
             privateWorkspaces={privateWorkspaces}
             sharedWorkspaces={sharedWorkspaces}
             collaboratingWorkspaces={collaboratingWorkspaces}
@@ -114,7 +114,7 @@ const Sidebar: React.FC<SidebarProps> = async ({ params, className }) => {
               ...collaboratingWorkspaces,
               ...sharedWorkspaces,
             ].find((workspace) => workspace.id === params.workspaceId)}
-          />
+          /> */}
         </div>
         
         <ScrollArea

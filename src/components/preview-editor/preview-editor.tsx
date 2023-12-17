@@ -2,6 +2,7 @@
 import { useAppState } from '@/lib/providers/state-provider';
 import { File, Folder, workspace } from '@/lib/supabase/supabase.types';
 import React, {
+  ElementRef,
   useCallback,
   useEffect,
   useMemo,
@@ -34,6 +35,7 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 import { Badge } from '../ui/badge';
 import Image from 'next/image';
+import TextareaAutosize from 'react-textarea-autosize'
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 import EmojiPicker from '../global/emoji-picker';
 import BannerUpload from '../banner-upload/banner-upload';
@@ -49,11 +51,29 @@ interface PreviewEditorPageProps {
   dirType: 'workspace' | 'folder' | 'file';
 }
 
+var TOOLBAR_OPTIONS = [
+  
+  [{ header: [1, 2, 3, 4, 5, 6, false] }],
+  [{ size: ['small', false, 'large', 'huge'] }], // custom dropdown
+  [{ font: [] }],
+  ['bold', 'italic', 'underline', 'strike'], // toggled buttons
+  ['blockquote', 'code-block'],
+  [{ list: 'ordered' }, { list: 'bullet' }],
+  [{ script: 'sub' }, { script: 'super' }], // superscript/subscript
+  [{ indent: '-1' }, { indent: '+1' }], // outdent/indent
+  [{ color: [] }, { background: [] }], // dropdown with defaults from theme
+  [{ direction: 'rtl' }], // text direction
+  ['link', 'image', 'video', 'formula'],
+  [{ align: [] }],
+  ['clean'], // remove formatting button
+];
+
 const PreviewEditorPage: React.FC<PreviewEditorPageProps> = ({
   dirDetails,
   dirType,
   fileId,
 }) => {
+  const inputRef = useRef<ElementRef<'textarea'>>(null)
   const supabase = createClientComponentClient();
   const { state, workspaceId, folderId, dispatch } = useAppState();
   const saveTimerRef = useRef<ReturnType<typeof setTimeout>>();
@@ -100,7 +120,8 @@ const PreviewEditorPage: React.FC<PreviewEditorPageProps> = ({
       data: dirDetails.data,
       inTrash: dirDetails.inTrash,
       bannerUrl: dirDetails.bannerUrl,
-      published: dirDetails.published
+      published: dirDetails.published,
+      editActive: dirDetails.editActive
     } as workspace | Folder | File;
   }, [state, workspaceId, folderId]);
 
@@ -113,11 +134,72 @@ const PreviewEditorPage: React.FC<PreviewEditorPageProps> = ({
       const Quill = (await import('quill')).default;
       const QuillCursors = (await import('quill-cursors')).default;
       Quill.register('modules/cursors', QuillCursors);
-      const q = new Quill(editor);
-      q.enable(false)
-      setQuill(q);
+      if(!details.editActive) {
+        const q = new Quill(editor);
+        q.enable(false)
+        setQuill(q);
+      } else {
+        const q = new Quill(editor, {
+          theme: 'snow',
+          modules: {
+            toolbar: TOOLBAR_OPTIONS,
+            cursors: {
+              transformOnTextChange: true,
+            },
+          },
+        });
+        q.enable(true)
+        setQuill(q);
+      }
     }
   }, []);
+
+  const workspaceNameChange = (newValue: string) => {
+    console.log(newValue);
+    
+    if (dirType === 'workspace') {
+      if (!workspaceId || !newValue) return;
+      dispatch({
+        type: 'UPDATE_WORKSPACE',
+        payload: { workspace: { title: newValue}, workspaceId },
+      });
+      if (titleTimerRef.current) clearTimeout(titleTimerRef.current);
+      titleTimerRef.current = setTimeout(async () => {
+        await updateWorkspace({ title: newValue }, workspaceId);
+      }, 500);
+    }
+    if (dirType === 'folder') {
+      if (!workspaceId) return;
+      dispatch({
+        type: 'UPDATE_FOLDER',
+        payload: {
+          folder: { title: newValue},
+          workspaceId,
+          folderId: fileId,
+        },
+      });
+      if (titleTimerRef.current) clearTimeout(titleTimerRef.current);
+      titleTimerRef.current = setTimeout(async () => {
+        await updateFolder({ title: newValue }, fileId);
+      }, 500);
+    }
+    if (dirType === 'file') {
+      if (!workspaceId || !folderId) return;
+      dispatch({
+        type: 'UPDATE_FILE',
+        payload: { 
+          file: { title: newValue },
+          workspaceId, 
+          folderId, 
+          fileId 
+        },
+      });
+      if (titleTimerRef.current) clearTimeout(titleTimerRef.current);
+      titleTimerRef.current = setTimeout(async () => {
+        await updateFile({ title: newValue }, fileId);
+      }, 500);
+    }
+  };
 
   useEffect(() => {
     if (!fileId) return;
@@ -337,7 +419,10 @@ const PreviewEditorPage: React.FC<PreviewEditorPageProps> = ({
     return () => {
       supabase.removeChannel(room);
     };
-  }, [fileId, quill, supabase, user]);  
+  }, [fileId, quill, supabase, user]); 
+  
+  console.log(details);
+  
 
     return (
         <>
@@ -364,7 +449,16 @@ const PreviewEditorPage: React.FC<PreviewEditorPageProps> = ({
                                     {details.iconId}
                                 </div>
                             </div>
-                            <span className="font-bold text-[40px] bg-transparent">{details.title}</span>
+                            {details.editActive ? 
+                              <TextareaAutosize
+                                ref={inputRef}
+                                className="text-5xl bg-transparent font-bold break-words outline-none resize-none"
+                                value={details ? details.title : ''}
+                                onChange={(e) => workspaceNameChange(e.target.value)}
+                              />
+                              :
+                              <span className="font-bold text-[40px] bg-transparent">{details.title}</span>
+                            }
                         </div>
                         <div id="container" className="w-full" ref={wrapperRef}></div>
                     </div> 

@@ -83,7 +83,8 @@ export const workspaces = pgTable('workspaces', {
   inTrash: text('in_trash'),
   logo: text('logo'),
   bannerUrl: text('banner_url'),
-  published: boolean('published').default(false)
+  published: boolean('published').default(false),
+  editActive: boolean('edit_active').default(false)
 });
 
 export const folders = pgTable('folders', {
@@ -99,7 +100,8 @@ export const folders = pgTable('folders', {
   workspaceId: uuid('workspace_id')
     .notNull()
     .references(() => workspaces.id, { onDelete: 'cascade' }),
-  published: boolean('published').default(false)
+  published: boolean('published').default(false),
+  editActive: boolean('edit_active').default(false)
 });
 
 export const files = pgTable('files', {
@@ -118,7 +120,8 @@ export const files = pgTable('files', {
   folderId: uuid('folder_id')
     .notNull()
     .references(() => folders.id, { onDelete: 'cascade' }),
-  published: boolean('published').default(false)
+  published: boolean('published').default(false),
+  editActive: boolean('edit_active').default(false)
 });
 
 export const users = pgTable('users', {

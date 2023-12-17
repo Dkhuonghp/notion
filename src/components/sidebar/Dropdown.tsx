@@ -277,7 +277,8 @@ const Dropdown: React.FC<DropdownProps> = ({
       id: v4(),
       workspaceId,
       bannerUrl: '',
-      published: false
+      published: false,
+      editActive: false,
     };
     dispatch({
       type: 'ADD_FILE',

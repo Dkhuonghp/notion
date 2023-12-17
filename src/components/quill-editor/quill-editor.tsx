@@ -501,7 +501,7 @@ const QuillEditor: React.FC<QuillEditorProps> = ({
       quill.off('selection-change', selectionChangeHandler);
       if (saveTimerRef.current) clearTimeout(saveTimerRef.current);
     };
-  }, [quill, socket, fileId, user, details, folderId, workspaceId, dispatch]);
+  }, [quill, socket, fileId, user, details, folderId, workspaceId, dispatch, dirType]);
 
   useEffect(() => {
     if (quill === null || socket === null) return;
@@ -561,306 +561,256 @@ const QuillEditor: React.FC<QuillEditorProps> = ({
     };
   }, [fileId, quill, supabase, user]);
   
-  return (
-    <>
-      <div className="relative">
-        {details.inTrash && (
-          <article
-            className="py-2 
-          z-40 
-          bg-[#EB5757] 
-          flex  
-          md:flex-row 
-          flex-col 
-          justify-center 
-          items-center 
-          gap-4 
-          flex-wrap"
-          >
-            <div
-              className="flex 
-            flex-col 
-            md:flex-row 
-            gap-2 
-            justify-center 
-            items-center"
-            >
-              <span className="text-white">
-                This {dirType} is in the trash.
-              </span>
-              <Button
-                size="sm"
-                variant="outline"
-                className="bg-transparent
-                border-white
-                text-white
-                hover:bg-white
-                hover:text-[#EB5757]
-                "
-                onClick={restoreFileHandler}
-              >
-                Restore
-              </Button>
-
-              <Button
-                size="sm"
-                variant="outline"
-                className="bg-transparent
-                border-white
-                text-white
-                hover:bg-white
-                hover:text-[#EB5757]
-                "
-                onClick={deleteFileHandler}
-              >
-                Delete
-              </Button>
-            </div>
-            <span className="text-sm text-white">{details.inTrash}</span>
-          </article>
-        )}
-        <div
-          className="flex 
-        flex-col-reverse 
-        sm:flex-row 
-        sm:justify-between 
-        justify-center 
-        sm:items-center 
-        sm:p-2 
-        p-8"
-        >
-          <div>{breadCrumbs}</div>
-          <div className="flex items-center gap-4">
-            <div className="flex items-center justify-center h-10">
-              {collaborators?.map((collaborator) => (
-                <TooltipProvider key={collaborator.id}>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <Avatar
-                        className="
-                    -ml-3 
-                    bg-background 
-                    border-2 
-                    flex 
-                    items-center 
-                    justify-center 
-                    border-white 
-                    h-8 
-                    w-8 
-                    rounded-full
+    return (
+        <>
+            <div className="flex flex-col-reverse sm:flex-row sm:justify-between justify-center sm:items-center sm:p-2 p-8">
+                <div>{breadCrumbs}</div>
+                <div className="flex items-center gap-4">
+                <div className="flex items-center justify-center h-10">
+                    {collaborators?.map((collaborator) => (
+                    <TooltipProvider key={collaborator.id}>
+                        <Tooltip>
+                        <TooltipTrigger asChild>
+                            <Avatar
+                            className="
+                        -ml-3 
+                        bg-background 
+                        border-2 
+                        flex 
+                        items-center 
+                        justify-center 
+                        border-white 
+                        h-8 
+                        w-8 
+                        rounded-full
+                        "
+                            >
+                            <AvatarImage
+                                src={
+                                collaborator.avatarUrl ? collaborator.avatarUrl : ''
+                                }
+                                className="rounded-full"
+                            />
+                            <AvatarFallback>
+                                {collaborator.email.substring(0, 2).toUpperCase()}
+                            </AvatarFallback>
+                            </Avatar>
+                        </TooltipTrigger>
+                        <TooltipContent>{collaborator.email}</TooltipContent>
+                        </Tooltip>
+                    </TooltipProvider>
+                    ))}
+                </div>
+                {saving ? (
+                    <Badge
+                    variant="secondary"
+                    className="bg-orange-600 top-4
+                    text-white
+                    right-4
+                    z-50
                     "
-                      >
-                        <AvatarImage
-                          src={
-                            collaborator.avatarUrl ? collaborator.avatarUrl : ''
-                          }
-                          className="rounded-full"
-                        />
-                        <AvatarFallback>
-                          {collaborator.email.substring(0, 2).toUpperCase()}
-                        </AvatarFallback>
-                      </Avatar>
-                    </TooltipTrigger>
-                    <TooltipContent>{collaborator.email}</TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
-              ))}
+                    >
+                    Đang lưu...
+                    </Badge>
+                ) : (
+                    <Badge
+                    variant="secondary"
+                    className="bg-emerald-600 
+                    top-4
+                    text-white
+                    right-4
+                    z-50
+                    "
+                    >
+                    Đã lưu
+                    </Badge>
+                )}
+                <Publish
+                    dirDetails={dirDetails}
+                    fileId={fileId}
+                    dirType={dirType}
+                />
+                </div>
             </div>
-            {saving ? (
-              <Badge
-                variant="secondary"
-                className="bg-orange-600 top-4
-                text-white
-                right-4
-                z-50
-                "
-              >
-                Đang lưu...
-              </Badge>
+            {details.inTrash ? (
+                <div className="relative">
+                {details.inTrash && (
+                    <article
+                    className="py-2 
+                    z-40 
+                    bg-[#EB5757] 
+                    flex  
+                    md:flex-row 
+                    flex-col 
+                    justify-center 
+                    items-center 
+                    gap-4 
+                    flex-wrap"
+                    >
+                    <div
+                        className="flex 
+                    flex-col 
+                    md:flex-row 
+                    gap-2 
+                    justify-center 
+                    items-center"
+                    >
+                        <span className="text-white">
+                        This {dirType} is in the trash.
+                        </span>
+                        <Button
+                        size="sm"
+                        variant="outline"
+                        className="bg-transparent
+                        border-white
+                        text-white
+                        hover:bg-white
+                        hover:text-[#EB5757]
+                        "
+                        onClick={restoreFileHandler}
+                        >
+                        Restore
+                        </Button>
+
+                        <Button
+                        size="sm"
+                        variant="outline"
+                        className="bg-transparent
+                        border-white
+                        text-white
+                        hover:bg-white
+                        hover:text-[#EB5757]
+                        "
+                        onClick={deleteFileHandler}
+                        >
+                        Delete
+                        </Button>
+                    </div>
+                    <span className="text-sm text-white">{details.inTrash}</span>
+                    </article>
+                )}
+                </div>
             ) : (
-              <Badge
-                variant="secondary"
-                className="bg-emerald-600 
-                top-4
-              text-white
-              right-4
-              z-50
-              "
-              >
-                Đã lưu
-              </Badge>
-            )}
-            <Publish
-              dirDetails={dirDetails}
-              fileId={fileId}
-              dirType={dirType}
-            />
-          </div>
-        </div>
-      </div>
-      <div className="relative">
-        {details.published === true && (
-          <article
-            className="py-2 
-          z-40 
-          bg-[rgba(35,131,226,0.09)] 
-          flex  
-          md:flex-row 
-          flex-col 
-          justify-center 
-          items-center 
-          gap-4 
-          flex-wrap"
-          >
-            <div
-              className="flex 
-            flex-col 
-            md:flex-row 
-            gap-2 
-            justify-center 
-            items-center"
-            >
-              <span className="text-[rgb(35,131,226)]">
-                  This {dirType} is live on web
-              </span>
-              <a href={`${origin}/preview/${parts}`} target='_blank' className='flex'>
-                <Button size="sm" variant="ghost" className='text-[rgb(35,131,226)]'>
-                    View site 
-                    {details.published && (
-                      <Globe className="text-[rgb(35,131,226)] animate-pulse h-4 w-4 ml-2" />
+                <div className="relative">
+                    {details.published === true && (
+                        <article className="py-2 z-40 bg-[rgba(35,131,226,0.09)] flex  md:flex-row flex-col justify-center items-center gap-4 flex-wrap">
+                            <div className="flex flex-col md:flex-row gap-2 justify-center items-center">
+                                <span className="text-[rgb(35,131,226)]">
+                                    This {dirType} is live on web
+                                </span>
+                                <a href={`${origin}/preview/${parts}`} target='_blank' className='flex'>
+                                    <Button size="sm" variant="ghost" className='text-[rgb(35,131,226)]'>
+                                        View site
+                                        {details.published && (
+                                            <Globe className="text-[rgb(35,131,226)] animate-pulse h-4 w-4 ml-2" />
+                                        )}
+                                    </Button>
+                                </a>
+                                <Button size="sm" variant="ghost" className='text-[rgb(35,131,226)]'>
+                                    Site settings
+                                    {details.published && (
+                                        <Settings className="text-sky-500 w-4 h-4 ml-2"/>
+                                    )}
+                                </Button>
+                            </div>
+                            <span className="text-sm text-white">{details.inTrash}</span>
+                        </article>
                     )}
-                </Button>
-              </a>
-              <Button size="sm" variant="ghost" className='text-[rgb(35,131,226)]'>
-                  Site settings 
-                  {details.published && (
-                    <Settings className="text-sky-500 w-4 h-4 ml-2"/>
-                  )}
-              </Button>
-            </div>
-            <span className="text-sm text-white">{details.inTrash}</span>
-          </article>
-        )}
-        <div
-          className="flex 
-        flex-col-reverse 
-        sm:flex-row 
-        sm:justify-between 
-        justify-center 
-        sm:items-center 
-        sm:p-2 
-        p-8"
-        >
-        </div>
-      </div>
-      {details.bannerUrl && (
-        <div className="relative w-full h-[200px]">
-          <Image
-            src={
-              supabase.storage
-                .from('file-banners')
-                .getPublicUrl(details.bannerUrl).data.publicUrl
-            }
-            fill
-            className="w-full md:h-48
-            h-20
-            object-cover"
-            alt="Banner Image"
-          />
-        </div>
-      )}
-      <div
-        className="flex 
-        justify-center
-        items-center
-        flex-col
-        mt-2
-        relative
-      "
-      >
-        <div
-          className="
-            w-full 
-            self-center 
-            max-w-[1100px] 
-            flex 
-            flex-col
-            px-7 
-            lg:my-8
-          "
-        >
-          <div className="text-[80px]">
-            <EmojiPicker getValue={iconOnChange}>
-              <div
-                className="w-[100px]
-                cursor-pointer
-                transition-colors
-                h-[100px]
-                flex
-                items-center
-                justify-center
-                hover:bg-muted
-                rounded-xl"
-              >
-                {details.iconId}
-              </div>
-            </EmojiPicker>
-          </div>
-          <div className="flex ">
-            <BannerUpload
-              id={fileId}
-              dirType={dirType}
-              className="mt-2
-              text-sm
-              text-muted-foreground
-              p-2
-              hover:text-card-foreground
-              transition-all
-              rounded-md"
-            >
-              {details.bannerUrl ? 'Update Banner' : 'Add Banner'}
-            </BannerUpload>
-            {details.bannerUrl && (
-              <Button
-                disabled={deletingBanner}
-                onClick={deleteBanner}
-                variant="ghost"
-                className="gap-2 hover:bg-background
-                flex
-                item-center
-                justify-center
-                mt-2
-                text-sm
-                text-muted-foreground
-                w-36
-                p-2
-                rounded-md"
-              >
-                <XCircleIcon size={16} />
-                <span className="whitespace-nowrap font-normal">
-                  Remove Banner
-                </span>
-              </Button>
+                    <div className="flex flex-col-reverse sm:flex-row sm:justify-between justify-center sm:items-center sm:p-2 p-8"></div>
+                </div>
             )}
-          </div>
-          <TextareaAutosize
-            ref={inputRef}
-            className="text-5xl bg-transparent font-bold break-words outline-none resize-none"
-            value={details ? details.title : ''}
-            onChange={(e) => workspaceNameChange(e.target.value)}
-          />
-          <span className="text-muted-foreground text-sm">
-            {dirType.toUpperCase()}
-          </span>
-        </div>
-        <div
-          id="container"
-          className="max-w-[1100px] mb-20"
-          ref={wrapperRef}
-        ></div>
-      </div>
-    </>
-  );
+            {details.bannerUrl && (
+                <div className="relative w-full h-[200px]">
+                    <Image
+                        src={
+                        supabase.storage
+                            .from('file-banners')
+                            .getPublicUrl(details.bannerUrl).data.publicUrl
+                        }
+                        fill
+                        className="w-full md:h-48 h-20 object-cover"
+                        alt="Banner Image"
+                    />
+                </div>
+            )}
+            <div
+                className="flex 
+                justify-center
+                items-center
+                flex-col
+                mt-2
+                relative
+            "
+            >
+                <div className="w-full self-center max-w-[1100px] flex flex-col px-7 lg:my-8">
+                    <div className="text-[80px]">
+                        <EmojiPicker getValue={iconOnChange}>
+                        <div
+                            className="w-[100px]
+                            cursor-pointer
+                            transition-colors
+                            h-[100px]
+                            flex
+                            items-center
+                            justify-center
+                            hover:bg-muted
+                            rounded-xl"
+                        >
+                            {details.iconId}
+                        </div>
+                        </EmojiPicker>
+                    </div>
+                    <div className="flex ">
+                        <BannerUpload
+                        id={fileId}
+                        dirType={dirType}
+                        className="mt-2
+                        text-sm
+                        text-muted-foreground
+                        p-2
+                        hover:text-card-foreground
+                        transition-all
+                        rounded-md"
+                        >
+                        {details.bannerUrl ? 'Update Banner' : 'Add Banner'}
+                        </BannerUpload>
+                        {details.bannerUrl && (
+                        <Button
+                            disabled={deletingBanner}
+                            onClick={deleteBanner}
+                            variant="ghost"
+                            className="gap-2 hover:bg-background
+                            flex
+                            item-center
+                            justify-center
+                            mt-2
+                            text-sm
+                            text-muted-foreground
+                            w-36
+                            p-2
+                            rounded-md"
+                        >
+                            <XCircleIcon size={16} />
+                            <span className="whitespace-nowrap font-normal">
+                            Remove Banner
+                            </span>
+                        </Button>
+                        )}
+                    </div>
+                    <TextareaAutosize
+                        ref={inputRef}
+                        className="text-5xl bg-transparent font-bold break-words outline-none resize-none"
+                        value={details ? details.title : ''}
+                        onChange={(e) => workspaceNameChange(e.target.value)}
+                    />
+                    <span className="text-muted-foreground text-sm">
+                        {dirType.toUpperCase()}
+                    </span>
+                </div>
+                <div id="container" className="max-w-[1100px] mb-20" ref={wrapperRef}></div>
+            </div>
+        </>
+    );
 };
 
 export default QuillEditor;

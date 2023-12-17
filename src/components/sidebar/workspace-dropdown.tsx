@@ -5,6 +5,7 @@ import React, { useEffect, useState } from 'react';
 import SelectedWorkspace from './selected-workspace';
 import CustomDialogTrigger from '../global/custom-dialog-trigger';
 import WorkspaceCreator from '../global/workspace-creator';
+import { PlusIcon } from 'lucide-react';
 
 interface WorkspaceDropdownProps {
   privateWorkspaces: workspace[] | [];
@@ -85,7 +86,7 @@ const WorkspaceDropdown: React.FC<WorkspaceDropdownProps> = ({
               {!!privateWorkspaces.length && (
                 <>
                   <p className="text-muted-foreground">Private</p>
-                  <hr></hr>
+                  <hr className='mt-1'/>
                   {privateWorkspaces.map((option) => (
                     <SelectedWorkspace
                       key={option.id}
@@ -98,7 +99,7 @@ const WorkspaceDropdown: React.FC<WorkspaceDropdownProps> = ({
               {!!sharedWorkspaces.length && (
                 <>
                   <p className="text-muted-foreground">Shared</p>
-                  <hr />
+                  <hr className='mt-1'/>
                   {sharedWorkspaces.map((option) => (
                     <SelectedWorkspace
                       key={option.id}
@@ -111,7 +112,7 @@ const WorkspaceDropdown: React.FC<WorkspaceDropdownProps> = ({
               {!!collaboratingWorkspaces.length && (
                 <>
                   <p className="text-muted-foreground">Collaborating</p>
-                  <hr />
+                  <hr className='mt-1'/>
                   {collaboratingWorkspaces.map((option) => (
                     <SelectedWorkspace
                       key={option.id}
@@ -122,36 +123,6 @@ const WorkspaceDropdown: React.FC<WorkspaceDropdownProps> = ({
                 </>
               )}
             </div>
-            <CustomDialogTrigger
-              header="Create A Workspace"
-              content={<WorkspaceCreator />}
-              description="Workspaces give you the power to collaborate with others. You can change your workspace privacy settings after creating the workspace too."
-            >
-              <div
-                className="flex 
-              transition-all 
-              hover:bg-muted 
-              justify-center 
-              items-center 
-              gap-2 
-              p-2 
-              w-full"
-              >
-                <article
-                  className="text-slate-500 
-                rounded-full
-                 bg-slate-800 
-                 w-4 
-                 h-4 
-                 flex 
-                 items-center 
-                 justify-center"
-                >
-                  +
-                </article>
-                Create workspace
-              </div>
-            </CustomDialogTrigger>
           </div>
         </div>
       )}

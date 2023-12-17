@@ -52,7 +52,6 @@ const CollaboratorSearch: React.FC<CollaboratorSearchProps> = ({
   const addCollaborator = (user: User) => {
     getCollaborator(user);
   };
-  console.log(searchResults);
   
   return (
     <Sheet>
@@ -105,7 +104,7 @@ const CollaboratorSearch: React.FC<CollaboratorSearchProps> = ({
                 <div className="flex gap-4 items-center">
                   <Avatar className="w-8 h-8">
                     {/* <AvatarImage src="/avatars/7.png" /> */}
-                    <AvatarFallback>K</AvatarFallback>
+                    <AvatarFallback>{user.email?.slice(0, 1)}</AvatarFallback>
                   </Avatar>
                   <div
                     className="text-sm 

@@ -71,7 +71,8 @@ const FoldersDropdownList: React.FC<FoldersDropdownListProps> = ({
       inTrash: null,
       workspaceId,
       bannerUrl: '',
-      published: false
+      published: false,
+      editActive: false,
     };
     dispatch({
       type: 'ADD_FOLDER',
