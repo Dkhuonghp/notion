@@ -22,18 +22,12 @@ interface PublishProps {
     dirDetails: File | Folder | workspace;
     fileId: string;
     dirType: 'workspace' | 'folder' | 'file';
-    existingCollaborators: User[] | [];
-    getCollaborator: (collaborator: User) => void;
-    children: React.ReactNode;
 }
 
 export const  Publish = ({
     dirDetails,
     dirType,
     fileId,
-    children,
-    existingCollaborators,
-    getCollaborator,
 }: PublishProps) => {
     const [copied, setCopied] = useState(false);
     const [isToggled, setIsToggled] = useState(false);
