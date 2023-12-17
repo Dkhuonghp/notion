@@ -419,9 +419,9 @@ const PreviewEditorPage: React.FC<PreviewEditorPageProps> = ({
     return () => {
       supabase.removeChannel(room);
     };
-  }, [fileId, quill, supabase, user]); 
-  
-  console.log(details);
+  }, [fileId, quill, supabase, user]);  
+
+console.log(details);
   
 
     return (

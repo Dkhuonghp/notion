@@ -2,21 +2,20 @@
 
 import Image from "next/image";
 import Link from "next/link";
-
 import { Button } from "@/components/ui/button";
 
 const Error = () => {
     return ( 
-        <div className="h-full flex flex-col items-center justify-center space-y-4">
+        <div className="h-full flex flex-col items-center justify-center space-y-4 pt-80">
             <Image
-                src=""
+                src="/error.png"
                 height="300"
                 width="300"
                 alt="Error"
                 className="dark:hidden"
             />
             <Image
-                src=""
+                src="/error-dark.png"
                 height="300"
                 width="300"
                 alt="Error"
